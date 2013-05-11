@@ -26,9 +26,9 @@ REDIRECT_URI = 'urn:ietf:wg:oauth:2.0:oob'
 # PICKLE ------------------
 #
 if os.path.exists("pickle/oauth_code.pick"):
-  credentials = None
-else:
   credentials = pickle.load(open("pickle/oauth_code.pick", "rb"))
+else:
+  credentials = None
 #
 # =========================
 
