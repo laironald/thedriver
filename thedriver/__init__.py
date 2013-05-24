@@ -84,16 +84,18 @@ class go():
         
         if "downloadUrl" in drive_file:
             download_url = drive_file.get('downloadUrl')
-            resp, content = self.service._http.request(download_url)
-            if resp.status == 200:
-                print 'Status: %s' % resp
-                return content
-            else:
-                print 'An error occurred: %s' % resp
-                return None
-        elif "exportLinks" in drive_file:
-            return drive_file["exportLinks"]["text/html"]
+        elif "exportlinks" in drive_file:
+            download_url = drive_file["exportLinks"]["text/html"]
         else:
-            # The file doesn't have any content stored on Drive.
-            return None    
+            download_url = None
+        
+        if not download_url:            
+            return None
+                
+        resp, content = self.service._http.request(download_url)
+        if resp.status == 200:
+            return content
+        else:
+            print 'An error occurred: %s' % resp
+            return None
 
