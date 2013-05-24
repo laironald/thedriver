@@ -1,6 +1,8 @@
 import os
 import pickle
 import httplib2
+import re
+import urllib2
 from apiclient.discovery import build
 
 
@@ -38,7 +40,7 @@ class go():
         self.service = build(self.product, self.version, **kwargs)
         return self.service
 
-    def file_list(self, **kwargs):
+    def files(self, **kwargs):
         """
         maxResults	integer	 
           Maximum number of files to return. 
@@ -48,12 +50,17 @@ class go():
         q	string	 
           Query string for searching files. 
           See Searching for files for more information about supported fields and operations.    
+          See: https://developers.google.com/drive/search-parameters
         """
         if not self.service:
             self.build()
+        
+        #i suspect we may search for title quite a bit
+        if "title" in kwargs:
+            kwargs["q"] = "title contains '" + kwargs.pop("title") + "'"
+            
 
         result = []
-        
         while True:
             try:
                 files = self.service.files().list(**kwargs).execute()
@@ -65,4 +72,28 @@ class go():
                 break
         return result
 
+    def download(self, drive_file):
+        """Download a file's content.
+        Args:
+        drive_file: Drive File instance.
+
+        Returns:
+        File's content if successful, None otherwise.
+        Directly from Google Drive API
+        """
+        
+        if "downloadUrl" in drive_file:
+            download_url = drive_file.get('downloadUrl')
+            resp, content = self.service._http.request(download_url)
+            if resp.status == 200:
+                print 'Status: %s' % resp
+                return content
+            else:
+                print 'An error occurred: %s' % resp
+                return None
+        elif "exportLinks" in drive_file:
+            return drive_file["exportLinks"]["text/html"]
+        else:
+            # The file doesn't have any content stored on Drive.
+            return None    
 
