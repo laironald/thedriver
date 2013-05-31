@@ -84,7 +84,7 @@ class go():
         
         if "downloadUrl" in drive_file:
             download_url = drive_file.get('downloadUrl')
-        elif "exportlinks" in drive_file:
+        elif "exportLinks" in drive_file:
             download_url = drive_file["exportLinks"]["text/html"]
         else:
             download_url = None
