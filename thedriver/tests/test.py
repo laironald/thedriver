@@ -27,8 +27,7 @@ for tag in soup.body.findChildren():
             break
         elif tag.text and comments[0].find(tag.text) == 0:
             comments[0] = comments[0][len(tag.text):]
-            if i == 0:
-                parentTag = tag
+            parentTag = tag
             doc = doc.replace(str(tag), "")
             break
         elif tag.text and tag.text.find(comments[0]) == 0:
