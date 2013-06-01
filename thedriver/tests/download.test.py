@@ -17,6 +17,7 @@ class TestTheDriver(unittest.TestCase):
     def test___download(self):
         content = drived.download(self.g, self.f[0])
         self.assertTrue("<html>" in content)
+        open("document.html", "wb").write(content)
 
 if __name__ == '__main__':
     unittest.main()
