@@ -1,3 +1,6 @@
+import os
+
+
 def download(driv, drive_file):
     """Download a file's content.
     Args:
@@ -23,5 +26,12 @@ def download(driv, drive_file):
         return None
 
 
-def ron():
-    print "hello"
+class format():
+    import re
+    import difflib
+    import BeautifulSoup
+
+    def __init__(self, html):
+        if os.path.exists(html):
+            html = "".join([x for x in open(html, "rb")])
+        self.html = html

@@ -8,6 +8,7 @@ close = True
 soup = BeautifulSoup.BeautifulSoup(doc)
 
 comments = re.findall("[/][*].*?[*][/]", soup.text)
+print comments
 parentTag = None
 
 for tag in soup.body.findChildren():
@@ -54,5 +55,9 @@ for tag in soup.body.findChildren():
                 exit = False
             if exit:
                 break
+    print tag.text
+    print tag
+    print "==========="
 
+doc = re.sub("[/][*].*?[*][/]", "", doc, re.I+re.S)
 open("download.html", "wb").write(doc)
