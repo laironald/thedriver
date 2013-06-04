@@ -1,7 +1,7 @@
+import bs4
+import difflib
 import os
 import re
-import difflib
-import bs4
 
 
 def download(driv, drive_file):
@@ -43,37 +43,60 @@ class format():
         p_y = parse[p_len:]
         self.parse = "[{}].*?[{}]".format("][".join(p_x), "][".join(p_y))
 
+    def text_plus(self, soup):
+        """
+        Extract extra content about the text (like Images)
+        """
+        if type(soup).__name__ == "str":
+            soup = bs4.BeautifulSoup(soup)
+        imgs = ["[img: {}]".format(x.get("src")) for x in soup.find_all("img")]
+        return soup.get_text() + "".join(imgs)
+
     def remove_comments(self):
         if not self.parse:
             self.set_parse()
 
-        # 0)
+        # a)
         # remove google doc-esque comments
+        # remove google doc-esque footnotes (do we want to delete?)
         soup = bs4.BeautifulSoup(self.html)
         for s in soup.findAll("a"):
             if s.get("href") and "#cmnt" in s.get("href"):
                 if "cmnt_" in s.get("name"):
-                    self.html = self.html.replace(unicode(s.parent), "")
+                    s.parent.extract()
                 elif "#cmnt_" in s.get("href"):
-                    self.html = self.html.replace(unicode(s.parent.parent), "")
-
-        soup = bs4.BeautifulSoup(self.html)
-        comments = re.findall(self.parse, soup.text)
-        parentTag = None
+                    s.parent.parent.extract()
+            elif s.get("href") and "#ftnt" in s.get("href"):
+                if "ftnt_" in s.get("name"):
+                    s.parent.extract()
+                elif "#ftnt_" in s.get("href"):
+                    s.parent.parent.parent.extract()
+                    s.parent.parent.extract()
+        self.html = soup.encode("ascii")
 
         # 1)
         # remove exact text matches
+        soup = bs4.BeautifulSoup(self.html)
+        comments = re.findall(self.parse, self.html)
+        commentt = [self.text_plus(k) for k in comments]
+        parentTag = None
         for tag in soup.body.findChildren():
             if not comments:
                 break
             if parentTag in tag.fetchParents():
                 continue
-            if tag.text in comments:
-                idx = comments.index(tag.text)
+            if self.text_plus(tag) in commentt:
+                idx = commentt.index(tag.get_text())
+                # print comments[idx]
                 comments.pop(idx)
+                commentt.pop(idx)
                 parentTag = tag
                 tag.extract()
-        self.html = unicode(soup)
+                # print tag
+                # print "------"
+        self.html = soup.encode("ascii")
+
+        #NOTE THIS STRIPS TOO MUCH CONTENT. TWO IMAGES? WTF!
 
         # 2)
         # search for blocks of comments that lead with /* and end with */
@@ -95,8 +118,9 @@ class format():
                 continue
             if re.findall(self.parse, tag.text):
                 parentTag = tag
-                self.html = self.html.replace(re.findall(self.parse, unicode(tag))[0], "")
+                self.html = self.html.replace(re.findall(self.parse, str(tag))[0], "")
 
+        """
         # 4)
         reach = False
         parentTag = None
@@ -110,7 +134,7 @@ class format():
             if parentTag in tag.fetchParents():
                 continue
 
-            m = difflib.SequenceMatcher(None, unicode(tag), comments[0])
+            m = difflib.SequenceMatcher(None, str(tag), comments[0])
             m = m.get_matching_blocks()[0]
             n = difflib.SequenceMatcher(None, tag.text, commentt[0])
             n = n.get_matching_blocks()[0]
@@ -126,7 +150,7 @@ class format():
                 else:
                     killTag = False
                     print [x for x in tag.findChildren()]
-                    tag.replaceWith(soup.newTag("RON<br/>"))
+                    tag.replace_with("RON<br/>")
 
                 parentTag = tag
                 comments[0] = comments[0][m.size:]
@@ -146,9 +170,9 @@ class format():
             if not (comments[0] and commentt[0]):
                 comments.pop(0)
                 commentt.pop(0)
-        self.html = unicode(soup)
+        self.html = soup.encode("ascii")
+        """
 
 r = format("tests/document.html")
 r.remove_comments()
-open("tests/download.html", "wb").write(r.html)
-print r.html
+open("tests/download.html", mode="wb").write(r.html)
