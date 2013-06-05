@@ -1,2 +1,5 @@
 google-api-python-client
 beautifulsoup4
+flask
+Flask-Assets
+Hamlish-Jinja
