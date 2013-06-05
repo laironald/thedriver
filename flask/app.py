@@ -34,14 +34,12 @@ def index():
 @app.route('/<title>')
 def render_base(title):
     f = drive.files(title=title)
-    print f[0]
     return render_template('side.html.haml', title=title, embedLink=f[0]["alternateLink"])
 
 
 @app.route('/right/<title>')
 def render_right(title):
     f = drive.files(title=title)
-    print f
     html = drived.download(drive, f[0])
     out = drived.format(html)
     out.remove_comments()
