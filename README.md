@@ -7,6 +7,8 @@ installation
 ------------
 
   pip install -r requirements.txt
+  gem install sass
+  gem install haml
 
 gotchas
 -----------

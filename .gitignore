@@ -2,3 +2,5 @@
 *.pyc
 *~
 *.html
+.webassets*
+/flask/static/all.css

@@ -1,9 +1,11 @@
+import inspect
 import os
 import pickle
 import httplib2
 from apiclient.discovery import build
 
-pickle_file = "pickle/oauth_code.pick"
+current_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+pickle_file = "{}/{}".format(current_dir, "../pickle/oauth_code.pick")
 #TODO: add some sense of relativity here
 
 
