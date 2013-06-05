@@ -1,5 +1,5 @@
 import bs4
-import difflib
+#import difflib
 import os
 import re
 
@@ -120,9 +120,15 @@ class format():
                 parentTag = tag
                 self.html = self.html.replace(re.findall(self.parse, str(tag))[0], "")
 
-        """
         # 4)
-        reach = False
+        # catch-all. note, we probably want to change this as
+        # it might be too aggressive
+        comments = re.findall(self.parse, self.html)
+        for c in comments:
+            self.html = self.html.replace(c, "")
+
+        # 5) TODO?
+        """
         parentTag = None
         soup = bs4.BeautifulSoup(self.html)
         comments = re.findall(self.parse, self.html)
@@ -130,6 +136,7 @@ class format():
         for c in comments:
             print c
         print ""
+
         for tag in soup.body.findChildren():
             if parentTag in tag.fetchParents():
                 continue
@@ -140,31 +147,24 @@ class format():
             n = n.get_matching_blocks()[0]
 
             if m.b == 0 and m.size:
-                reach = True
                 print "==="
                 print comments[0]
+                print len(comments[0]), len(commentt[0])
                 # decision elimate everything OR keep tag?
                 if n.a == 0 and n.size == len(tag.text):
-                    killTag = True
                     tag.extract()
+                elif tag.string:
+                    tag.string.replace_with(tag.text[:n.a] + tag.text[n.a+n.size:])
                 else:
-                    killTag = False
-                    print [x for x in tag.findChildren()]
-                    tag.replace_with("RON<br/>")
+                    newt = soup.new_tag("a")
+                    newt.string = "LiWeN"
+                    tag.replace_with(newt)
 
                 parentTag = tag
                 comments[0] = comments[0][m.size:]
                 commentt[0] = commentt[0][n.size:]
 
-                print comments[0]
-                print tag
-                print killTag
-
-            if reach:
-                print "--------"
-                print m.b, m.size, n.b, n.size
-                print tag.text
-                print commentt[0]
+                print len(comments[0]), len(commentt[0])
                 print tag
 
             if not (comments[0] and commentt[0]):
@@ -173,6 +173,8 @@ class format():
         self.html = soup.encode("ascii")
         """
 
+"""
 r = format("tests/document.html")
 r.remove_comments()
 open("tests/download.html", mode="wb").write(r.html)
+"""
