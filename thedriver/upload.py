@@ -9,9 +9,69 @@ import urllib2
 from apiclient.http import MediaFileUpload
 from apiclient.discovery import build
 
+from apiclient import errors
+
+def retrieve_all_files(service):
+    """Retrieve a list of File resources.
+
+    Args:
+      service: Drive API service instance.
+    Returns:
+      List of File resources.
+    """
+    result = []
+    page_token = None
+    while True:
+        try:
+            param = {}
+            if page_token:
+                param['pageToken'] = page_token
+            files = service.files().list(**param).execute()
+            result.extend(files['items'])
+            page_token = files.get('nextPageToken')
+            if not page_token:
+                break
+        except errors.HttpError, error:
+            print 'An error occurred: %s' % error
+            break
+    return result
+
+def list_files_in_folder(service, folder_id):
+  """Print files belonging to a folder.
+
+  Args:
+    service: Drive API service instance.
+    folder_id: ID of the folder to print files from.
+  """
+  result = []
+  page_token = None
+  while True:
+    try:
+      param = {}
+      if page_token:
+        param['pageToken'] = page_token
+      children = service.children().list(
+          folderId=folder_id, **param).execute()
+
+      for child in children.get('items', []):
+        result.append(child['id'])
+      page_token = children.get('nextPageToken')
+      if not page_token:
+        break
+    except errors.HttpError, error:
+      print 'An error occurred: %s' % error
+      break
+  return result
+
+''' not necessary to set up this function. 
+put it here as a reminder of the usage. '''
+def get_file_by_id(service, fileId):
+    return service.files().get(fileId=fileId).execute()
+
 class uploader():
     driver = None
     uploadFolder = None
+    convertTab = {"html": "text/html","txt": "text/plain" }
 
     def find_publish_folder(self, folder_name):
         '''Check if there exists any public folder whose name contains folder_name.
@@ -56,20 +116,34 @@ class uploader():
         service.permissions().insert(
         fileId=file["id"], body=permission).execute()
         return file
+    def get_mimeType(self, filename):
+        ext = filename.split(".")[-1]
+	return self.convertTab[ext]
         
-    def upload_html(self, filename):
-        '''Upload a local html file to publish_folder.
+    def upload(self, filename):
+        '''Upload a local file to publish_folder.
 	Args:
 	filename: path to the file to upload.
        
         Returns:
 	Drive File instance for the uploaded file.
 	'''
-        media_body = MediaFileUpload(filename, mimetype="text/html", resumable=True)
+	conflict_files = self.driver.files(title=filename)
+	conflict_files = filter(
+            lambda f:
+	    f["title"] == filename
+            and (not "explicitlyTrashed" in f or not f["explicitlyTrashed"]) 
+	    and f["parents"] != self.uploadFolder["id"],
+          conflict_files)
+	if conflict_files:
+	    print "uploader.upload: file already exists!"
+	    return
+	mimeType = self.get_mimeType(filename); 
+        media_body = MediaFileUpload(filename, mimetype=mimeType, resumable=True)
 	body = {
            "title": filename,
            "description": "a html file uploaded by thedriver",
-	   "mimeType": "text/html",
+	   "mimeType": mimeType,
 	   "parents": [{
 		   "kind":"drive#fileLink",
 		   "id":self.uploadFolder["id"]
