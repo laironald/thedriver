@@ -71,6 +71,8 @@ def get_file_by_id(service, fileId):
 class uploader():
     driver = None
     uploadFolder = None
+
+    # mapping from files' surfix to mimetype
     convertTab = {"html": "text/html","txt": "text/plain" }
 
     def find_publish_folder(self, folder_name):
@@ -118,7 +120,7 @@ class uploader():
         return file
     def get_mimeType(self, filename):
         ext = filename.split(".")[-1]
-	return self.convertTab[ext]
+        return self.convertTab[ext]
         
     def upload(self, filename):
         '''Upload a local file to publish_folder.
