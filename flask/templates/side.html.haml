@@ -1,4 +1,3 @@
-{% haml %}
 %html
     %head
         %title -> Hello!
@@ -11,7 +10,6 @@
             <button onclick="document.getElementById('refresh').src = 'http://localhost:5000/right/{{ title }}'">refresh</button>
         <iframe src="{{ embedLink }}" width="650px" width="1080px" height="600px"></iframe>
         <iframe id="refresh" src="http://localhost:5000/right/{{ title }}" width="650px" height="600px"></iframe>
-{% endhaml %}
 
 <script>
 /*
