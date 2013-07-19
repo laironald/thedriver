@@ -1,18 +1,2 @@
-%html
-    %head
-        %title -> Hello!
-        
-        -assets "css_all"
-            %link rel="stylesheet" type="text/css" href="{{ ASSET_URL }}"
-    %body
-        %div.header
-            some ghetto header &nbsp;&nbsp;&nbsp;
-            <button onclick="document.getElementById('refresh').src = 'http://localhost:5000/right/{{ title }}'">refresh</button>
-        <iframe src="{{ embedLink }}" width="650px" width="1080px" height="600px"></iframe>
-        <iframe id="refresh" src="http://localhost:5000/right/{{ title }}" width="650px" height="600px"></iframe>
 
-<script>
-/*
-setInterval(function(){ document.getElementById('refresh').src = 'http://localhost:5000/right/{{ title }}' }, 2000);
-*/
-</script>
+<iframe src="{{ embedLink }}" width="650px" width="1080px" height="600px"></iframe>
