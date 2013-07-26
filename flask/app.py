@@ -3,16 +3,15 @@
 #https://github.com/Pitmairen/hamlish-jinja
 
 import sys
-#sys.path.append("..")
+sys.path.append("..")
 
-#import thedriver
-#import thedriver.download as drived
+import thedriver
+import thedriver.download as drived
 from flask import Flask, render_template
 from flask import url_for
 from flask import send_from_directory
 import hamlish_jinja
 
-#drive = thedriver.go()
 app = Flask(__name__)
 app.debug = True
 
@@ -25,13 +24,15 @@ app.jinja_env.hamlish_enable_div_shortcut = True
 
 @app.route('/')
 def index():
+    return render_template('marketing.html',
+        title='GhostDocs (>")>')
+
+@app.route('/base')
+def base():
     return render_template('index.html')
 
-@app.route('/v2')
-def index2():
-    return render_template('marketing.html')
 
-
+# --- STATIC FIXTURES ---
 # added these to help serve up the static files
 
 @app.route('/css/<path:filename>')
@@ -47,6 +48,18 @@ def send_js(filename):
 @app.route('/img/<path:filename>')
 def send_img(filename):
     return send_from_directory('static/img', filename)
+
+# -----------------------
+
+@app.route('/<username>/<title>')
+def render_base(username, title):
+    drive = thedriver.go()
+    f = drive.files(title=title)
+    return render_template('marketing.html', 
+        title='<("<) | {0}'.format(title), 
+        iframe=f[0]["alternateLink"],
+        username=username)
+
 
 # @app.route('/<title>')
 # def render_base(title):
