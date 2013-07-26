@@ -10,9 +10,16 @@ from apiclient.discovery import build
 from apiclient import errors
 
 import ghost_db
+import thedriver
 
 db_connector = ghost_db.GhostDBConnector();
 
+class UserSession:
+        name = None
+        service = None
+
+        def __init__(self, user_name):
+                pass
 
 def list_ghost_docs( user_id ):
         pass
