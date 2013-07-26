@@ -24,8 +24,10 @@ app.jinja_env.hamlish_enable_div_shortcut = True
 
 @app.route('/')
 def index():
-    return render_template('marketing.html',
+    return render_template(
+        'marketing.html',
         title='GhostDocs (>")>')
+
 
 @app.route('/base')
 def base():
@@ -51,12 +53,14 @@ def send_img(filename):
 
 # -----------------------
 
+
 @app.route('/<username>/<title>')
 def render_base(username, title):
     drive = thedriver.go()
     f = drive.files(title=title)
-    return render_template('marketing.html', 
-        title='<("<) | {0}'.format(title), 
+    return render_template(
+        'marketing.html',
+        title='<("<) | {0}'.format(title),
         iframe=f[0]["alternateLink"],
         username=username)
 
