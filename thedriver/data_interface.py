@@ -9,6 +9,11 @@ from apiclient.discovery import build
 
 from apiclient import errors
 
+import ghost_db
+
+db_connector = ghost_db.GhostDBConnector();
+
+
 def list_ghost_docs( user_id ):
         pass
 
@@ -21,4 +26,9 @@ def list_google_docs( user_id, if_hide_ghost_doc=True ):
 def list_recent_docs( user_id ):
         pass
 
+def add_user( user_name, google_account, oauth_code):
+        user = ghost_db.User(name=user_name,
+                        google_account=google_account,
+                        oauth_code=oauth_code)
+        db_connector.session.add(user)
 
