@@ -1,55 +1,61 @@
-import sys
-sys.path.append("..")
+#from flask.ext.assets import Environment, Bundle
+#consider Flask-Assets, but sometime later
+#https://github.com/Pitmairen/hamlish-jinja
 
-import thedriver
-import thedriver.download as drived
+import sys
+#sys.path.append("..")
+
+#import thedriver
+#import thedriver.download as drived
 from flask import Flask, render_template
+from flask import url_for
+from flask import send_from_directory
 import hamlish_jinja
 
-#from flask.ext.assets import Environment, Bundle
-#from hamlish_jinja import HamlishExtension
-#consider Flask-Assets, but sometime later
-
-drive = thedriver.go()
+#drive = thedriver.go()
 app = Flask(__name__)
 app.debug = True
 
-# add haml and compile assets
-#https://github.com/Pitmairen/hamlish-jinja
 app.jinja_env.add_extension('hamlish_jinja.HamlishExtension')
 app.jinja_env.hamlish_enable_div_shortcut = True
-#env = Environment(extensions=[HamlishExtension])
 
-#assets = Environment(app)
-#assets.url = app.static_url_path
-#sass = Bundle('css/base.css.sass', filters='pyscss', output='all.css')
-#assets.register('css_all', sass)
-#js_bundle = Bundle('js/test.js.coffee', filters='coffeescript', output='all.js')
-#assets.register('js_all', js_bundle)
+
+# url_for('static', filename='all.css')
+
 
 @app.route('/')
 def index():
-    return render_template('index.html.haml')
+    return render_template('index.html')
 
 
-@app.route("/ron")
-def index2():
-    return "FDS"
+# added these to help serve up the static files
+
+@app.route('/css/<path:filename>')
+def send_css(filename):
+    return send_from_directory('static/css', filename)
 
 
-@app.route('/<title>')
-def render_base(title):
-    f = drive.files(title=title)
-    return render_template('side.html.haml', title=title, embedLink=f[0]["alternateLink"])
+@app.route('/js/<path:filename>')
+def send_js(filename):
+    return send_from_directory('static/js', filename)
 
 
-@app.route('/right/<title>')
-def render_right(title):
-    f = drive.files(title=title)
-    html = drived.download(drive, f[0])
-    out = drived.format(html)
-    out.remove_comments()
-    return out.html
+@app.route('/img/<path:filename>')
+def send_img(filename):
+    return send_from_directory('static/img', filename)
+
+# @app.route('/<title>')
+# def render_base(title):
+#     f = drive.files(title=title)
+#     return render_template('side.html.haml', title=title, embedLink=f[0]["alternateLink"])
+
+# @app.route('/right/<title>')
+# def render_right(title):
+#     f = drive.files(title=title)
+#     html = drived.download(drive, f[0])
+#     out = drived.format(html)
+#     out.remove_comments()
+#     return out.html
 
 if __name__ == '__main__':
     app.run()
