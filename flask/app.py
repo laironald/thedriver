@@ -27,6 +27,10 @@ app.jinja_env.hamlish_enable_div_shortcut = True
 def index():
     return render_template('index.html')
 
+@app.route('/v2')
+def index2():
+    return render_template('marketing.html')
+
 
 # added these to help serve up the static files
 
