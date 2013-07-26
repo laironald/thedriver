@@ -10,12 +10,6 @@ installation
   gem install sass
   gem install haml
 
-JavaScript libraries
---------------------
-
-  * [NPR Responsive IFrames](http://npr.github.io/responsiveiframe/)
-
-
 gotchas
 -----------
 
