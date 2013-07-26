@@ -61,3 +61,8 @@ class GhostDBConnector():
 def sample_run():
         connector = GhostDBConnector()
         connector.CreateDB()
+        user = User(name='jones',
+                        google_account='thedriverjones',
+                        oauth_code=u'ya29.AHES6ZRblP_bGLgjj-_NhyfV-8Ttm4nSo0naFFWvaMq_6e8')
+        connector.session.add(user)
+        connector.session.commit()
