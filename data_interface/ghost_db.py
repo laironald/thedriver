@@ -27,6 +27,8 @@ class Document(Base):
         handle = Column(String(45))
         is_protected = Column(Boolean)
         is_published = Column(Boolean)
+        # published html 
+        # alternateLink 
 
         user_id = Column(Integer, ForeignKey('user.id'))
         folder_id = Column(Integer, ForeignKey('folder.id'))
