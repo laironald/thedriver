@@ -130,17 +130,17 @@ def publish_doc( user_id=None, google_doc_id=None ):
 
         return html_compiled
 
-def view_doc( user_id=None, doc_id=None ):
+def view_doc( user_id=None, google_doc_id=None ):
         ''' Load the content of a compiled doc.
 
         Warning:  the default arg values user_id=None and google_doc_id=None are both for ease of testing.
 
         Args:
             user_id: GhostDoc user_id.
-            doc_id: id of GhostDoc.
+            google_doc_id: id of a google doc.
 
         Returns:
-            HTML as a string.
+            HTML as a string. ( need to return more, such as navigation. )
         '''
         # TODO
         preview_doc()
