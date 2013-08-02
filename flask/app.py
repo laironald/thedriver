@@ -54,7 +54,7 @@ def send_img(filename):
 # -----------------------
 
 
-@app.route('/<username>/<title>')
+@app.route('/in/<username>/<title>')
 def render_base(username, title):
     drive = thedriver.go()
     f = drive.files(title=title)
