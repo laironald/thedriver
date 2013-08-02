@@ -73,6 +73,7 @@ def load_doc( user_id=None, google_doc_id=None ):
         Returns:
             meta data of a google doc.
         '''
+
         if google_doc_id:
             file = session.drive.service.files().get(fileId=google_doc_id).execute()
         else:  # TODO remove this else branch. (this else branch is only for testing)
@@ -86,14 +87,14 @@ def add_user( user_name, google_account, oauth_code):
         db_connector.session.add(user)
         db_connector.session.commit()
 
-def preview_doc( user_id=None, google_doc_id=None ):
+def preview_doc( user_id=None, file=None ):
 
         ''' process a google doc and show the compiled HTML.
         Warning:  the default arg values user_id=None and google_doc_id=None are both for ease of testing.
 
         Args:
             user_id: GhostDoc user_id.
-            google_doc_id: id of the google doc.
+            file: metadata of a google doc.
 
         Returns:
             HTML as a string.
@@ -101,9 +102,13 @@ def preview_doc( user_id=None, google_doc_id=None ):
 
         '''
 
+        '''
         if google_doc_id:
             file = session.drive.service.files().get(fileId=google_doc_id).execute()
         else:  # TODO remove this else branch. (this else branch is only for testing)
+            file = session.drive.files(title="test")[0];
+        '''
+        if not file:
             file = session.drive.files(title="test")[0];
 
         doc_in_html = drived.download(session.drive, file)
@@ -111,26 +116,32 @@ def preview_doc( user_id=None, google_doc_id=None ):
         out.remove_comments()
         return out.html
 
-def publish_doc( user_id=None, google_doc_id=None ):
+def publish_doc( user_id=None, file=None ):
         ''' Process a google doc and publish it.
 
         Warning:  the default arg values user_id=None and google_doc_id=None are both for ease of testing.
 
         Args:
             user_id: GhostDoc user_id.
-            google_doc_id: id of the google doc.
+            file: metadata of a google doc.
 
         Returns:
             Compiled HTML as a string.
 
 
         '''
-        html_compiled = preview_doc
-        # TODO  save compiled html to d/b;  save publish histroy to d/b.
+        if not file:
+            file = session.drive.files(title="test")[0];
+
+        html_compiled = preview_doc(user_id, file)
+        if not db_connector.doc_exist(arg_google_doc_id):
+                connector.add_doc(file,123);
+
+        connector.update_doc(file['id'], html_compiled)
 
         return html_compiled
 
-def view_doc( user_id=None, google_doc_id=None ):
+def view_doc( user_id=None, arg_google_doc_id=None ):
         ''' Load the content of a compiled doc.
 
         Warning:  the default arg values user_id=None and google_doc_id=None are both for ease of testing.
@@ -142,9 +153,12 @@ def view_doc( user_id=None, google_doc_id=None ):
         Returns:
             HTML as a string. ( need to return more, such as navigation. )
         '''
-        # TODO
-        preview_doc()
- 
+        if not arg_google_doc_id:
+                arg_google_doc_id = list_google_docs()[0]['id']
+
+        doc = db_connector.find_doc(arg_google_doc_id)[0]
+        html = doc.html
+        return html
 
 
 session = UserSession();
