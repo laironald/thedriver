@@ -8,7 +8,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
         <title>{{ title }}</title>
         <meta name="description" content="">
-        <meta name="viewport" content="width=device-width">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
         <link rel="stylesheet" href="/css/bootstrap.min.css">
         <style>
@@ -17,7 +17,6 @@
                 padding-bottom: 40px;
             }
         </style>
-        <link rel="stylesheet" href="/css/bootstrap-responsive.min.css">
         <link rel="stylesheet" href="/css/main.css">
 
         <script src="/js/vendor/modernizr-2.6.2-respond-1.1.0.min.js"></script>
@@ -27,73 +26,75 @@
             <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
         <![endif]-->
 
-
-        <div class="navbar navbar-inverse navbar-fixed-top">
-            <div class="navbar-inner">
-                <div class="container">
-                    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </a>
-                    <a class="brand" href="#">GhostDocs (&gt;")&gt;</a>
-                    <div class="nav-collapse collapse">
-                        <ul class="nav">
-                        </ul>
-                        <ul class="nav pull-right">
-                          <li class="divider-vertical"></li>
-                          <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ username }} <b class="caret"></b></a>
-                            <ul class="dropdown-menu">
-                              <li><a href="#">Action</a></li>
-                              <li><a href="#">Another action</a></li>
-                              <li><a href="#">Something else here</a></li>
-                              <li class="divider"></li>
-                              <li><a href="#">Separated link</a></li>
-                            </ul>
-                          </li>
-                        </ul>
-                    </div><!--/.nav-collapse -->
-                </div>
+        <div class="navbar">
+          <div class="container">
+            <a href="#" class="navbar-brand">GhostDocs (&gt;")&gt;</a>
+            <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse">
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <div class="nav-collapse collapse bs-navbar-collapse">
+              <ul class="nav navbar-nav pull-right">
+                <li class="divider-vertical"></li>
+                <li class="dropdown">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                    {% if username %}
+                      {{ username }}
+                    {% else %} 
+                      ghostie
+                    {% endif %} 
+                  <b class="caret"></b></a>
+                  <ul class="dropdown-menu">
+                    <li><a href="#">Action</a></li>
+                    <li><a href="#">Another action</a></li>
+                    <li><a href="#">Something else here</a></li>
+                    <li class="divider"></li>
+                    <li><a href="#">Separated link</a></li>
+                  </ul>
+                </li>
+              </ul>
             </div>
+          </div>
         </div>
 
         <div class="container">
-
-
-
 <!-- 
         </div>
 
         <div class="container-fluid">
  -->
-          <br /><br />
           <div class="row-fluid">
+            <br/>
             <div class="row-fluid">
               <div class="span4">
-                <a class="btn" href="#"><i class="icon-plus-sign"></i> New</a>
                 <div class="btn-group">
-                  <a class="btn" href="#"><i class="icon-folder-open"></i> Open</a>
-                  <a class="btn dropdown-toggle" data-toggle="dropdown" href="#"><span class="caret"></span></a>
-                  <ul class="dropdown-menu">
-                    <li><a href="#">Recent File1</a></li>
-                    <li><a href="#">Recent File2</a></li>
-                    <li><a href="#">Recent File3</a></li>
-                    <li class="divider"></li>
-                    <li><a href="#"><i class="i"></i> Blah Blah</a></li>
-                  </ul>
+                  <button type="button" class="btn btn-primary">New</button>
+                  <div class="btn-group">
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                      Open
+                      <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                      <li><a href="#">Recent File1</a></li>
+                      <li><a href="#">Recent File2</a></li>
+                      <li><a href="#">Recent File3</a></li>
+                      <li class="divider"></li>
+                      <li><a href="#"><i class="i"></i> Blah Blah</a></li>
+                     </ul>
+                  </div>
                 </div>
-                <a class="btn" href="#"><i class="icon-wrench"></i> Settings</a>
-              </div>
-              <div class="span5 text-right"></div>
-              <div class="span3 text-right">
-                <a class="btn" href="#"><i class="icon-play"></i> Publish</a>
-                <a class="btn" href="#"><i class="icon-zoom-in"></i> Preview</a>
+                <div class="btn-group">
+                  <button type="button" class="btn btn-default">Publish</button>
+                  <button type="button" class="btn btn-default">Preview</button>
+                </div>
+                <button type="button" class="btn btn-default">Settings</button>
+
+              <div class="span8 text-right">
               </div>
             </div>
-            <br />
-            <br />
             <div class="row-fluid">
+              <br /><br />
               <ul class="nav nav-tabs">
                 <li class="active">
                   <a href="#">Tutorial of Liwen</a>
@@ -106,8 +107,9 @@
             <!-- Example row of columns -->
             <div class="row-fluid">
               <div class="span12">
-                <iframe src="{{ iframe }}" 
-                  frameborder="0" height="800" width="1200"></iframe>
+                <br /><br />
+                <iframe src="{% if iframe %}{{ iframe }}{% else %}www.google.com{% endif %}"
+                  frameborder="1" height="800" width="1200"></iframe>
               </div>
             </div>
 
@@ -126,11 +128,14 @@
 
         <script src="/js/main.js"></script>
 
+        <!--
         <script>
             var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
             (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
             g.src='//www.google-analytics.com/ga.js';
             s.parentNode.insertBefore(g,s)}(document,'script'));
         </script>
+      -->
+
     </body>
 </html>
