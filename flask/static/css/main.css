@@ -14,8 +14,15 @@ iframe {
    ========================================================================== */
 
 body {
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+
+footer {
+    border-top: 1px solid #ddd;
     padding-top: 20px;
-    padding-bottom: 60px;
+    padding-bottom: 20px;
+    margin-top: 50px;
 }
 
 /* Custom container */
