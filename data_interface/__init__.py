@@ -18,6 +18,7 @@ gdoc_mimeType = 'application/vnd.google-apps.document'
 
 class UserSession:
         drive = None
+        user_id = None # ghost doc id
         name = None # ghost doc username
 
         def __init__(self, user_name=None):
@@ -26,12 +27,21 @@ class UserSession:
                 self.drive.build()
 
 
-def list_ghost_docs( user_id ):
-        '''
-        # TODO
 
-        '''
-        pass
+def list_ghost_docs( user_id ):
+        """ list a user's GhostDocs files
+
+        Args:
+            user_id: user's GhostDocs id
+
+        Return:
+            a list of Document instances. e.g.:
+            [ {id:1, name:'Test', googledoc_id:'FAPI3C9A', password:None, handle:'Jones', is_protected:False, ... },
+              {id:2, name:'...', .....  }
+            ]
+        """
+        docs = db_connector.list_ghost_docs( user_id )
+        return docs
 
 def list_google_docs( user_id=None, if_hide_ghost_doc=True ):
         """list a user's all editable google docs
@@ -50,7 +60,7 @@ def list_google_docs( user_id=None, if_hide_ghost_doc=True ):
             ]
 
         """
-        files = session.drive.files();
+        files = user_session.drive.files();
         google_docs = filter( lambda f: f['mimeType'] == gdoc_mimeType
                         and (not 'explicitlyTrashed' in f
                                 or not f['explicitlyTrashed'])
@@ -73,14 +83,24 @@ def load_doc( user_id=None, google_doc_id=None ):
         Returns:
             meta data of a google doc.
         '''
+        if not user_id:  # remove this condition (it's only for testing)
+                user_id = 1
 
         if google_doc_id:
-            file = session.drive.service.files().get(fileId=google_doc_id).execute()
+            file = user_session.drive.service.files().get(fileId=google_doc_id).execute()
         else:  # TODO remove this else branch. (this else branch is only for testing)
-            file = session.drive.files(title="test")[0];
+            #file = user_session.drive.files(title="test")[0];
+            file = list_google_docs()[0]
+            google_doc_id = file['id']
+        if not db_connector.doc_exists(google_doc_id):
+            db_connector.add_doc(file, user_id);
+
         return file
         
 def add_user( user_name, google_account, oauth_code):
+        ''' register a new GhostDocs user
+
+        '''
         user = ghost_db.User(name=user_name,
                         google_account=google_account,
                         oauth_code=oauth_code)
@@ -104,14 +124,14 @@ def preview_doc( user_id=None, file=None ):
 
         '''
         if google_doc_id:
-            file = session.drive.service.files().get(fileId=google_doc_id).execute()
+            file = user_session.drive.service.files().get(fileId=google_doc_id).execute()
         else:  # TODO remove this else branch. (this else branch is only for testing)
-            file = session.drive.files(title="test")[0];
+            file = user_session.drive.files(title="test")[0];
         '''
         if not file:
-            file = session.drive.files(title="test")[0];
+            file = list_google_docs()[0];
 
-        doc_in_html = drived.download(session.drive, file)
+        doc_in_html = drived.download(user_session.drive, file)
         out = drived.format(doc_in_html)
         out.remove_comments()
         return out.html
@@ -131,7 +151,7 @@ def publish_doc( user_id=None, file=None ):
 
         '''
         if not file:
-            file = session.drive.files(title="test")[0];
+            file = list_google_docs()[0]
 
         html_compiled = preview_doc(user_id, file)
         if not db_connector.doc_exist(arg_google_doc_id):
@@ -161,4 +181,4 @@ def view_doc( user_id=None, arg_google_doc_id=None ):
         return html
 
 
-session = UserSession();
+user_session = UserSession();
