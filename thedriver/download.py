@@ -172,9 +172,4 @@ class format():
                 commentt.pop(0)
         self.html = soup.encode("ascii")
         """
-
-"""
-r = format("tests/document.html")
-r.remove_comments()
-open("tests/download.html", mode="wb").write(r.html)
-"""
+        pass
