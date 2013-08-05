@@ -18,6 +18,11 @@ class UserSession:
         self.drive = thedriver.go()
         self.drive.build()
 
+user_session = UserSession()
+
+
+# --------------------------------
+
 
 def list_ghost_docs(user_id):
     """ list a user's GhostDocs files
@@ -86,17 +91,17 @@ def load_doc(user_id=None, google_doc_id=None):
         meta data of a google doc.
     """
     if not user_id:  # remove this condition (it's only for testing)
-            user_id = 1
+        user_id = 1
 
     if google_doc_id:
-        file = user_session.drive.service.files().get(fileId=google_doc_id).execute()
+        filename = user_session.drive.service.files().get(fileId=google_doc_id).execute()
     else:  # TODO remove this else branch. (this else branch is only for testing)
         #file = user_session.drive.files(title="test")[0];
-        file = list_google_docs()[0]
-        google_doc_id = file['id']
+        filename = list_google_docs()[0]
+        google_doc_id = filename['id']
     if not db_connector.doc_exists(google_doc_id):
-        db_connector.add_doc(file, user_id)
-    return file
+        db_connector.add_doc(filename, user_id)
+    return filename
 
 
 def add_user(user_name, google_account, oauth_code):
@@ -110,7 +115,7 @@ def add_user(user_name, google_account, oauth_code):
     db_connector.session.commit()
 
 
-def preview_doc(user_id=None, file=None):
+def preview_doc(user_id=None, filename=None):
     """
     process a google doc and show the compiled HTML.
     Warning:  the default arg values user_id=None and google_doc_id=None are both for ease of testing.
@@ -129,16 +134,16 @@ def preview_doc(user_id=None, file=None):
     else:  # TODO remove this else branch. (this else branch is only for testing)
         file = user_session.drive.files(title="test")[0];
     """
-    if not file:
-        file = list_google_docs()[0]
+    if not filename:
+        filename = list_google_docs()[0]
 
-    doc_in_html = drived.download(user_session.drive, file)
+    doc_in_html = drived.download(user_session.drive, filename)
     out = drived.format(doc_in_html)
     out.remove_comments()
     return out.html
 
 
-def publish_doc(user_id=None, file=None):
+def publish_doc(user_id=None, filename=None):
     """
     Process a google doc and publish it.
 
@@ -151,13 +156,13 @@ def publish_doc(user_id=None, file=None):
     Returns:
         Compiled HTML as a string.
     """
-    if not file:
-        file = list_google_docs()[0]
+    if not filename:
+        filename = list_google_docs()[0]
 
-    html_compiled = preview_doc(user_id, file)
+    html_compiled = preview_doc(user_id, filename)
     if not db_connector.doc_exist(arg_google_doc_id):
-        db_connector.add_doc(file, 123)
-    db_connector.update_doc(file['id'], html_compiled)
+        db_connector.add_doc(filename, 123)
+    db_connector.update_doc(filename['id'], html_compiled)
 
     return html_compiled
 
@@ -181,6 +186,3 @@ def view_doc(user_id=None, arg_google_doc_id=None):
     doc = db_connector.find_doc(arg_google_doc_id)[0]
     html = doc.html
     return html
-
-
-user_session = UserSession()
