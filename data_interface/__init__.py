@@ -5,7 +5,7 @@ import thedriver.download as drived
 
 db_connector = ghost_db.GhostDBConnector()
 config = ghost_db.get_config()
-gdoc_mimeType = config.get("global").get("gdoc_mimeType")
+gdoc_mimeType = config.get("global").get("gdoc_mimetype")
 
 
 class UserSession:
