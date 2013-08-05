@@ -64,6 +64,7 @@ def render_base(username, title):
         iframe=f[0]["alternateLink"],
         username=username)
 
+#@app.route('/preview/<username>/')
 
 # @app.route('/<title>')
 # def render_base(title):

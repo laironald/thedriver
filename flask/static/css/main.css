@@ -7,8 +7,20 @@
 iframe {
   max-width: 100%;
   min-height: 100%;
-  overflow: hidden;
   border: 1px solid #ddd;
+}
+
+body .modal {
+    width: 800px;
+    margin-left: 320px;
+}
+body .modal-dialog {
+    width: 800px;
+}
+body .modal-body {
+    /* todo make this height thing automatic */
+    height: 500px;
+    overflow: auto;
 }
 
 /* ==========================================================================
@@ -16,8 +28,8 @@ iframe {
    ========================================================================== */
 
 body {
-    padding-top: 0px;
-    padding-bottom: 0px;
+    padding-top: 0;
+    padding-bottom: 0;
     min-height: 100%;
 }
 
