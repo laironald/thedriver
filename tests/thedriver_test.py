@@ -1,7 +1,7 @@
 #!/usr/bin/python
 import sys
 import unittest
-sys.path.append('../..')
+sys.path.append('..')
 
 import thedriver
 class TestTheDriver(unittest.TestCase):
@@ -19,10 +19,8 @@ class TestTheDriver(unittest.TestCase):
         pass
 
     def test_files(self):
-        tot_files = len( self.g.files() )
-        self.assertTrue( self.g.files(title="liwen") < tot_files )
-
-
+        tot_files = len(self.g.files())
+        self.assertTrue(self.g.files(title="liwen") < tot_files)
 
 if __name__ == '__main__':
     unittest.main()
