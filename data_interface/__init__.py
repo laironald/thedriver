@@ -94,14 +94,14 @@ def load_doc(user_id=None, google_doc_id=None):
         user_id = 1
 
     if google_doc_id:
-        filename = user_session.drive.service.files().get(fileId=google_doc_id).execute()
+        filelist = user_session.drive.service.files().get(fileId=google_doc_id).execute()
     else:  # TODO remove this else branch. (this else branch is only for testing)
         #file = user_session.drive.files(title="test")[0];
-        filename = list_google_docs()[0]
-        google_doc_id = filename['id']
+        filelist = list_google_docs()[0]
+        google_doc_id = filelist['id']
     if not db_connector.doc_exists(google_doc_id):
-        db_connector.add_doc(filename, user_id)
-    return filename
+        db_connector.add_doc(filelist, user_id)
+    return filelist
 
 
 def add_user(user_name, google_account, oauth_code):
@@ -115,7 +115,7 @@ def add_user(user_name, google_account, oauth_code):
     db_connector.session.commit()
 
 
-def preview_doc(user_id=None, filename=None):
+def preview_doc(user_id=None, filelist=None):
     """
     process a google doc and show the compiled HTML.
     Warning:  the default arg values user_id=None and google_doc_id=None are both for ease of testing.
@@ -134,16 +134,16 @@ def preview_doc(user_id=None, filename=None):
     else:  # TODO remove this else branch. (this else branch is only for testing)
         file = user_session.drive.files(title="test")[0];
     """
-    if not filename:
-        filename = list_google_docs()[0]
+    if not filelist:
+        filelist = list_google_docs()[0]
 
-    doc_in_html = drived.download(user_session.drive, filename)
+    doc_in_html = drived.download(user_session.drive, filelist)
     out = drived.format(doc_in_html)
     out.remove_comments()
     return out.html
 
 
-def publish_doc(user_id=None, filename=None):
+def publish_doc(user_id=None, filelist=None):
     """
     Process a google doc and publish it.
 
@@ -156,13 +156,13 @@ def publish_doc(user_id=None, filename=None):
     Returns:
         Compiled HTML as a string.
     """
-    if not filename:
-        filename = list_google_docs()[0]
+    if not filelist:
+        filelist = list_google_docs()[0]
 
-    html_compiled = preview_doc(user_id, filename)
+    html_compiled = preview_doc(user_id, filelist)
     if not db_connector.doc_exist(arg_google_doc_id):
-        db_connector.add_doc(filename, 123)
-    db_connector.update_doc(filename['id'], html_compiled)
+        db_connector.add_doc(filelist, 123)
+    db_connector.update_doc(filelist['id'], html_compiled)
 
     return html_compiled
 
