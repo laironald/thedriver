@@ -6,7 +6,6 @@ from apiclient.discovery import build
 
 current_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 pickle_file = "{}/{}".format(current_dir, "../pickle/oauth_code.pick")
-#TODO: add some sense of relativity here
 
 
 class go():
@@ -16,7 +15,7 @@ class go():
     def __init__(self, product="drive", version="v2"):
         self.product = product
         self.version = version
-        pass
+        self.service = self.build()
 
     def build(self, **kwargs):
         """
@@ -51,9 +50,6 @@ class go():
           See Searching for files for more information about supported fields and operations.
           See: https://developers.google.com/drive/search-parameters
         """
-        if not self.service:
-            self.build()
-        #i suspect we may search for title quite a bit
         if "title" in kwargs:
             kwargs["q"] = "title contains '" + kwargs.pop("title") + "'"
 
