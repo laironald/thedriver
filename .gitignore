@@ -1,6 +1,5 @@
 *.swp
 *.pyc
-*~
 .webassets*
 .DS_Store
 *.db
