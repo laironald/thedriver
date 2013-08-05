@@ -59,8 +59,8 @@ class User(Base):
     __tablename__ = 'user'
 
     id = Column(Integer, primary_key=True)
-    name = Column(String(45))
-    handle = Column(String(45))
+    name = Column(String(45), unique=True)
+    handle = Column(String(45), unique=True)
     google_account = Column(String(45))
     oauth_code = Column(String(45))
 
@@ -116,14 +116,18 @@ class GhostDBConnector():
             self.engine = create_engine('sqlite:///{path}/{database}'.format(**config.get(database)), echo=echo)
         Session = sessionmaker(bind=self.engine)
         self.session = Session()
+        self.CreateDB()
 
     def CreateDB(self):
         ''' Create tables as defined above
 
         '''
-        Base.metadata.create_all(self.engine)
+        Base.metadata.create_all(self.engine, checkfirst=True)
 
     def add_user(self, arg_name, arg_google_account, arg_oauth_code):
+        ''' Add a new user to GhostDocs
+
+        '''
         user = User(name=arg_name,
                     google_account=arg_google_account,
                     oauth_code=arg_oauth_code)
@@ -138,14 +142,15 @@ class GhostDBConnector():
             return 0 if add doc sucessfully;
             return -1 if doc already added to GhostDocs.
         '''
-        # TODO  link file with a user
         if self.doc_exists(file['id']):
             return -1
 
         doc = Document(name=file['title'],
                        googledoc_id=file['id'],
                        alternateLink=file['alternateLink'],
-                       is_published=False)
+                       is_published=False,
+                       user_id=user_id)
+
         self.session.add(doc)
         self.session.commit()
 
@@ -174,7 +179,11 @@ class GhostDBConnector():
         return flag
 
     def find_doc(self, arg_googledoc_id):
-        docs = self.session.query(Document).filter_by(Document.googledoc_id == arg_googledoc_id)
+        docs = self.session.query(Document).filter(Document.googledoc_id == arg_googledoc_id)
+        return docs
+
+    def list_ghost_docs(self, user_id):
+        docs = self.session.query(Document).filter(Document.user_id == user_id).all()
         return docs
 
 
