@@ -22,3 +22,13 @@ function adjustIframes()
   });
 }
 $(window).on('resize load', adjustIframes);
+
+$(".publish").click(function() {
+    alert("publish");
+});
+$(".preview").click(function() {
+    $("#previewModal").modal({
+        keyboard: true
+        /* remote: true */
+    });
+});
