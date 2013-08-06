@@ -78,31 +78,22 @@ def render_preview(doc_id):
     return di.view_doc(arg_google_doc_id=doc_id)
 
 
-@app.route('/publish/<doc_id>')
-def publish_doc(doc_id):
-    doc = di.load_doc(googledoc_id=doc_id)
-    if not doc.count():
+@app.route('/out/<username>/<dochandle>')
+def render_publish(username, dochandle):
+    doc = di.load_doc(username, dochandle)
+    if not doc:
         return "Weird stuff yo!"
     else:
-        htmlLink = doc.first().htmlLink
-        di.publish_doc(filedict=htmlLink)
-        status = {}
-        status["status"] = "success"
-        return json.dumps(status)
+        return di.view_doc(arg_google_doc_id=doc.googledoc_id)
 
 
-# @app.route('/<title>')
-# def render_base(title):
-#     f = drive.files(title=title)
-#     return render_template('side.html.haml', title=title, embedLink=f[0]["alternateLink"])
+@app.route('/publish/<doc_id>')
+def publish_doc(doc_id):
+    di.publish_doc(filedict=doc_id)
+    status = {}
+    status["status"] = "success"
+    return json.dumps(status)
 
-# @app.route('/right/<title>')
-# def render_right(title):
-#     f = drive.files(title=title)
-#     html = drived.download(drive, f[0])
-#     out = drived.format(html)
-#     out.remove_comments()
-#     return out.html
 
 if __name__ == '__main__':
     app.run()
