@@ -9,9 +9,10 @@ iframe.doc {
     min-height: 100%;
     border: 1px solid #ddd;
 }
-iframe.modal {
-    width: 750px;
-    height: 400px;
+.modal-body iframe {
+    max-width: 100%;
+    min-height: 100%;
+    border: 0px none;
 }
 
 body .modal {
@@ -24,7 +25,7 @@ body .modal-dialog {
 body .modal-body {
     /* todo make this height thing automatic */
     height: 480px;
-    overflow: auto;
+    overflow: hidden;
 }
 
 .menubar {

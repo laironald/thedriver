@@ -41,17 +41,10 @@ $(".publish").click(function() {
     });
 });
 $(".preview").click(function() {
-    $("#previewModal").modal({
-        "keyboard": true
-    });
-    /* there is something weird here */
+    $(".modal-header .nav-pills li").removeClass("active");
+    $(".modal-header .nav-pills li.first").addClass("active");
     url = "/preview/" + $(this).data("url");
-    $.ajax({
-        url: url,
-        success: function(result) {
-            $(".modal-body").html(result);
-        }
-    });
+    $(".modal-body iframe").attr("src", url);
 });
 $(".modal-header .nav-pills a").click(function() {
     $(".modal-header .nav-pills li").removeClass("active");
@@ -62,10 +55,5 @@ $(".modal-header .nav-pills a").click(function() {
         url = "/view/";
     }
     url = url + $(this).data("url");
-    $.ajax({
-        url: url,
-        success: function(result) {
-            $(".modal-body").html(result);
-        }
-    });
+    $(".modal-body iframe").attr("src", url);
 });
