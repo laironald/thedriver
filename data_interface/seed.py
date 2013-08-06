@@ -8,11 +8,15 @@ doc = {
     "name": "Testing File",
     "googledoc_id": "1TE0ouM01lsPvot5aZRDv9D7-xC-kLJ0dg3S_zPdWrO4",
     "handle": "testing",
-    "html": "".join([x for x in open("ron.html", "rb")])
+    "html": "".join([x for x in open("temp/ron.html", "rb")])
 }
 doc = Document(**doc)
 user.document.append(doc)
-print user.document
+
+"""
+Liwen, let's make the googledoc_id the PK?
+ - since this is unique
+"""
 
 connector.session.merge(user)
 connector.session.commit()
