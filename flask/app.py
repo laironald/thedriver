@@ -6,12 +6,11 @@ import sys
 sys.path.append("..")
 
 import data_interface as di
-import thedriver
-import thedriver.download as drived
 from flask import Flask, render_template
 from flask import url_for
 from flask import send_from_directory
 import hamlish_jinja
+import json
 
 app = Flask(__name__)
 app.debug = True
@@ -77,6 +76,19 @@ def render_preview(doc_id):
     # should be preview doc, but whatever
     # change this later
     return di.view_doc(arg_google_doc_id=doc_id)
+
+
+@app.route('/publish/<doc_id>')
+def publish_doc(doc_id):
+    doc = di.load_doc(googledoc_id=doc_id)
+    if not doc.count():
+        return "Weird stuff yo!"
+    else:
+        htmlLink = doc.first().htmlLink
+        di.publish_doc(filedict=htmlLink)
+        status = {}
+        status["status"] = "success"
+        return json.dumps(status)
 
 
 # @app.route('/<title>')
