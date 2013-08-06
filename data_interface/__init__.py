@@ -104,6 +104,11 @@ def load_doc(user_id=None, google_doc_id=None):
     return filedict
 
 
+# this is an override for the function above
+def load_doc(username, googledoc_id):
+    return db_connector.find_doc_by_user(username, googledoc_id)
+
+
 def add_user(user_name, google_account, oauth_code):
     """
     register a new GhostDocs user

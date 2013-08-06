@@ -57,21 +57,25 @@ def send_img(filename):
 # -----------------------
 
 
-@app.route('/in/<username>/<title>')
-def render_base(username, title):
-    drive = thedriver.go()
-    f = drive.files(title=title)
-    return render_template(
-        'marketing.html',
-        title='<("<) | {0}'.format(title),
-        iframe=f[0]["alternateLink"],
-        username=username,
-        googletitle="Testing",
-        googledoc="1TE0ouM01lsPvot5aZRDv9D7-xC-kLJ0dg3S_zPdWrO4")
+@app.route('/in/<username>/<dochandle>')
+def render_base(username, dochandle):
+    doc = di.load_doc(username, dochandle)
+    if not doc:
+        return "Weird stuff yo!"
+    else:
+        return render_template(
+            'marketing.html',
+            title='<("<) | {0}'.format(doc.name),
+            iframe=doc.alternateLink,
+            username=doc.user.name,
+            googletitle=doc.name,
+            googledoc=doc.googledoc_id)
 
 
 @app.route('/preview/<doc_id>')
 def render_preview(doc_id):
+    # should be preview doc, but whatever
+    # change this later
     return di.view_doc(arg_google_doc_id=doc_id)
 
 

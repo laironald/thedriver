@@ -186,6 +186,14 @@ class GhostDBConnector():
         docs = self.session.query(Document).filter(Document.user_id == user_id).all()
         return docs
 
+    def find_doc_by_user(self, username, dochandle):
+        # TODO: might want to use join logic. maybe.
+        user = self.session.query(User).filter(User.handle == username)
+        if user.count():
+            for doc in user.first().document:
+                if doc.handle == dochandle:
+                    return doc
+
 
 def sample_run():
     connector = GhostDBConnector()
