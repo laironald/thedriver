@@ -13,10 +13,5 @@ doc = {
 doc = Document(**doc)
 user.document.append(doc)
 
-"""
-Liwen, let's make the googledoc_id the PK?
- - since this is unique
-"""
-
 connector.session.merge(user)
 connector.session.commit()

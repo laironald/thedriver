@@ -5,7 +5,7 @@
 import sys
 sys.path.append("..")
 
-from data_interface.ghost_db import GhostDBConnector, User, Document, Folder
+import data_interface as di
 import thedriver
 import thedriver.download as drived
 from flask import Flask, render_template
@@ -67,7 +67,7 @@ def render_base(username, title):
 
 @app.route('/preview/<doc_id>')
 def render_preview(doc_id):
-    pass
+    return di.view_doc(arg_google_doc_id=doc_id)
 
 # @app.route('/<title>')
 # def render_base(title):

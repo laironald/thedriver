@@ -1,0 +1,4 @@
+Liwen, let's make the googledoc_id the PK?
+ - since this is unique and you use it for stuff anyways
+ - we might need to have a many-many relationship between
+   documents and user, no?
