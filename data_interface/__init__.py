@@ -77,36 +77,39 @@ def list_recent_docs(user_id):
     pass
 
 
-def load_doc(user_id=None, google_doc_id=None):
-    """
-    return the meta data of a google doc. (the 'alternateLink' is used for embedding the iframe.
+# def load_doc(user_id=None, google_doc_id=None):
+#     """
+#     return the meta data of a google doc. (the 'alternateLink' is used for embedding the iframe.
 
-    Warning:  the default arg values user_id=None and google_doc_id=None are both for ease of testing.
+#     Warning:  the default arg values user_id=None and google_doc_id=None are both for ease of testing.
 
-    Args:
-        user_id: GhostDoc user_id
-        google_doc_id: id of the google doc
+#     Args:
+#         user_id: GhostDoc user_id
+#         google_doc_id: id of the google doc
 
-    Returns:
-        meta data of a google doc.
-    """
-    if not user_id:  # remove this condition (it's only for testing)
-        user_id = 1
+#     Returns:
+#         meta data of a google doc.
+#     """
+#     if not user_id:  # remove this condition (it's only for testing)
+#         user_id = 1
 
-    if google_doc_id:
-        filedict = user_session.drive.service.files().get(fileId=google_doc_id).execute()
-    else:  # TODO remove this else branch. (this else branch is only for testing)
-        #file = user_session.drive.files(title="test")[0];
-        filedict = list_google_docs()[0]
-        google_doc_id = filedict['id']
-    if not db_connector.doc_exists(google_doc_id):
-        db_connector.add_doc(filedict, user_id)
-    return filedict
+#     if google_doc_id:
+#         filedict = user_session.drive.service.files().get(fileId=google_doc_id).execute()
+#     else:  # TODO remove this else branch. (this else branch is only for testing)
+#         #file = user_session.drive.files(title="test")[0];
+#         filedict = list_google_docs()[0]
+#         google_doc_id = filedict['id']
+#     if not db_connector.doc_exists(google_doc_id):
+#         db_connector.add_doc(filedict, user_id)
+#     return filedict
 
 
 # this is an override for the function above
-def load_doc(username, googledoc_id):
-    return db_connector.find_doc_by_user(username, googledoc_id)
+def load_doc(username=None, dochandle=None, googledoc_id=None):
+    if username and dochandle:
+        return db_connector.find_doc_by_user(username, dochandle)
+    elif googledoc_id:
+        return db_connector.find_doc(googledoc_id)
 
 
 def add_user(user_name, google_account, oauth_code):
@@ -156,7 +159,7 @@ def publish_doc(user_id=None, filedict=None):
 
     Args:
         user_id: GhostDoc user_id.
-        file: metadata of a google doc.
+        filedict: metadata of a google doc.
 
     Returns:
         Compiled HTML as a string.
@@ -165,10 +168,19 @@ def publish_doc(user_id=None, filedict=None):
         filedict = list_google_docs()[0]
 
     html_compiled = preview_doc(user_id, filedict)
-    if not db_connector.doc_exist(arg_google_doc_id):
-        db_connector.add_doc(filedict, 123)
-    db_connector.update_doc(filedict['id'], html_compiled)
+    # if we want to have a ghostdocs id, this might not
+    # be suffice. it probably is in this case
+    #  user_id and the doc_id
 
+    # probably need to revisit this in some capacity
+    if type(filedict).__name__ == "dict":
+        if not db_connector.doc_exist(filedict):
+            db_connector.add_doc(filedict, user_id)
+        doc_id = filedict["id"]
+    else:
+        doc_id = filedict
+
+    db_connector.update_doc(doc_id, html_compiled)
     return html_compiled
 
 
