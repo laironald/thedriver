@@ -71,20 +71,30 @@ def render_base(username, dochandle):
             googledoc=doc.googledoc_id)
 
 
-@app.route('/preview/<doc_id>')
-def render_preview(doc_id):
-    # should be preview doc, but whatever
-    # change this later
-    return di.view_doc(arg_google_doc_id=doc_id)
-
-
 @app.route('/out/<username>/<dochandle>')
 def render_publish(username, dochandle):
     doc = di.load_doc(username, dochandle)
     if not doc:
         return "Weird stuff yo!"
     else:
-        return di.view_doc(arg_google_doc_id=doc.googledoc_id)
+        return render_template(
+            'powered.html',
+            username=doc.user.name,
+            googletitle=doc.name,
+            title='<("<) | {0}'.format(doc.name),
+            googledoc=doc.googledoc_id)
+
+
+@app.route('/view/<doc_id>')
+def render_view(doc_id):
+    return di.view_doc(arg_google_doc_id=doc_id)
+
+
+@app.route('/preview/<doc_id>')
+def render_preview(doc_id):
+    # should be preview doc, but whatever
+    # change this later
+    return di.view_doc(arg_google_doc_id=doc_id)
 
 
 @app.route('/publish/<doc_id>')
