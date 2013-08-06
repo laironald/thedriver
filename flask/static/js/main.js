@@ -24,7 +24,21 @@ function adjustIframes()
 $(window).on('resize load', adjustIframes);
 
 $(".publish").click(function() {
-    alert("publish");
+    url = "/publish/" + $(this).data("url");
+    $(".publish").attr("disabled", "disabled");
+    $.ajax({
+        url: url,
+        dataType: "json",
+        success: function() {
+            $("#status_message").removeClass("alert-danger hide").addClass("alert-success").fadeIn("slow").html("Successfully Published").delay(800).fadeOut('slow');
+        },
+        error: function() {
+            $("#status_message").addClass("alert-danger").removeClass("hide alert-success").fadeIn("slow").html("Publishing Error: try again").delay(800).fadeOut('slow');
+        },
+        complete: function() {
+            $(".publish").removeAttr("disabled");
+        }
+    });
 });
 $(".preview").click(function() {
     url = "/preview/" + $(this).data("url");

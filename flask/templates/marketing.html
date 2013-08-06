@@ -32,7 +32,7 @@
                 
               </div>
               <div class="modal-footer">
-                <a href="#" class="btn btn-default publish">Publish</a>
+                <a href="#" data-url="{{ googledoc }}" data-dismiss="modal" class="btn btn-default publish">Publish</a>
                 <a href="#" class="btn btn-primary" data-dismiss="modal">Close</a>
               </div>
             </div><!-- /.modal-content -->
@@ -74,8 +74,8 @@
         <div class="container">
           <div class="row-fluid">
             <br/>
-            <div class="row-fluid">
-              <div class="span4">
+            <div class="row-fluid menubar">
+              <div class="col-8">
                 <div class="btn-group">
                   <button type="button" class="btn btn-primary">New</button>
                   <div class="btn-group">
@@ -93,38 +93,46 @@
                   </div>
                 </div>
                 <div class="btn-group">
-                  <button type="button" class="btn btn-default publish">Publish</button>
+                  <button type="button" data-url="{{ googledoc }}" class="btn btn-default publish">Publish</button>
                   <button type="button" data-url="{{ googledoc }}" class="btn btn-default preview">Preview</button>
                 </div>
                 <button type="button" class="btn btn-default">Settings</button>
-
-              <div class="span8 text-right">
+              </div>
+              <div class="col-4 text-center">
+                <div class="hide alert alert-success" id="status_message">Awesome. Successfully Published</div>
               </div>
             </div>
             <div class="row-fluid">
-              <br /><br /><br/>
-              <ul class="nav nav-tabs">
-                <li class="active">
-                  <a href="#">Tutorial of Liwen</a>
-                </li>
-                <li><a href="#">Hello World!</a></li>
-                <li><a href="#">Hi World</a></li>
-              </ul>
+              <div class="col-12">
+                <ul class="nav nav-tabs">
+                  <li class="active">
+                    <a href="#">Tutorial of Liwen</a>
+                  </li>
+                  <li><a href="#">Hello World!</a></li>
+                  <li><a href="#">Hi World</a></li>
+                </ul>
+              </div>
             </div>
 
             <!-- Example row of columns -->
             <div class="row-fluid">
-              <div class="span12">
+              <div class="col-12">
                 <br />
                 <iframe src="{% if iframe %}{{ iframe }}{% else %}www.google.com{% endif %}"
                   class="doc" frameborder="1" height="800" width="1200"></iframe>
               </div>
             </div>
-
+          </div>
         </div> <!-- /container -->
 
         <footer class="bs-footer">
-          <p>A Liwen + Ron production, 2013</p>
+          <div class="container">
+            <div class="row-fluid">
+              <div class="col-12">
+                <p>A Liwen + Ron production, 2013</p>
+              </div>
+            </div>
+          </div>          
         </footer>
 
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
