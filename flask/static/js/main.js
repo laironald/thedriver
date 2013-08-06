@@ -44,6 +44,7 @@ $(".preview").click(function() {
     $("#previewModal").modal({
         "keyboard": true
     });
+    /* there is something weird here */
     url = "/preview/" + $(this).data("url");
     $.ajax({
         url: url,
