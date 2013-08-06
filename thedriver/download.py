@@ -133,7 +133,12 @@ class format():
         for c in comments:
             self.html = self.html.replace(c, "")
 
-        # 5) TODO?
+        # 5)
+        # Remove extraneous CSS markup
+        bodyclass = soup.body["class"]
+        self.html = re.sub(".%s[{].*?[}]" % bodyclass, "", self.html)
+
+        # 6) TODO?
         """
         parentTag = None
         soup = bs4.BeautifulSoup(self.html)
