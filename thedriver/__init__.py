@@ -35,8 +35,12 @@ class go():
         if not self.http:
             self.auth_http()
         kwargs["http"] = self.http
-        self.service = build(self.product, self.version, **kwargs)
-        return self.service
+        try:
+            self.service = build(self.product, self.version, **kwargs)
+            return self.service
+        except:
+            print "No service"
+            return None
 
     def files(self, **kwargs):
         """
