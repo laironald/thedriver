@@ -2,5 +2,6 @@
 *.pyc
 .webassets*
 .DS_Store
-*.db
 *~
+
+*.db
