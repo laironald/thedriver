@@ -1,7 +1,7 @@
 #!/usr/bin/python
 import sys
 import unittest
-sys.path.append('../..')
+sys.path.append('..')
 
 import data_interface as di 
 import data_interface.ghost_db as db
