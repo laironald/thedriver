@@ -56,10 +56,11 @@ $(".modal-header .nav-pills a").click(function() {
     $(".modal-header .nav-pills li").removeClass("active");
     $(this).parent("li").addClass("active");
     if ($(this).html() == "Preview") {
-        url = "/preview/" + $(this).data("url");
+        url = "/preview/";
     } else {
-        url = "/view/" + $(this).data("url");
+        url = "/view/";
     }
+    url = url + $(this).data("url");
     $.ajax({
         url: url,
         success: function(result) {

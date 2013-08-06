@@ -5,9 +5,13 @@
    ========================================================================== */
 
 iframe.doc {
-  max-width: 100%;
-  min-height: 100%;
-  border: 1px solid #ddd;
+    max-width: 100%;
+    min-height: 100%;
+    border: 1px solid #ddd;
+}
+iframe.modal {
+    width: 750px;
+    height: 400px;
 }
 
 body .modal {
