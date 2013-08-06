@@ -6,7 +6,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title>{{ title }}</title>
+        <title>&lt;("&lt;) | {{ doc.name }}</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -21,14 +21,14 @@
           <div class="row-fluid">
             <div class="row-fluid">
               <div class="col-12">
-                <h3>{{ googletitle }}</h3>
+                <h3>{{ doc.name }}</h3>
                 <br />
-                <iframe src="/view/{{ googledoc }}"
+                <iframe src="/view/{{ doc.googledoc_id }}"
                   class="doc" frameborder="1" width="1200" scrolling="no"></iframe>
                 <br /><br />
                 <h5>
                   <span class="label label-info">This document is powered by GhostDocs (&gt;")&gt;</span>
-                  <span class="label">@{{ username }}
+                  <span class="label">@{{ user.handle }}
                 </h5>
               </div>
             </div>

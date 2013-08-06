@@ -71,13 +71,7 @@ def render_publish(username, dochandle):
     if not doc:
         return "Weird stuff yo!"
     else:
-        return render_template(
-            'powered.html',
-            username=doc.user.name,
-            googletitle=doc.name,
-            title='<("<) | {0}'.format(doc.name),
-            googledoc=doc.googledoc_id)
-
+        return render_template('powered.html', doc=doc, user=doc.user)
 
 @app.route('/view/<doc_id>')
 def render_view(doc_id):
