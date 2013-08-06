@@ -5,6 +5,7 @@
 import sys
 sys.path.append("..")
 
+from data_interface.ghost_db import GhostDBConnector, User, Document, Folder
 import thedriver
 import thedriver.download as drived
 from flask import Flask, render_template
@@ -64,7 +65,9 @@ def render_base(username, title):
         iframe=f[0]["alternateLink"],
         username=username)
 
-#@app.route('/preview/<username>/')
+@app.route('/preview/<doc_id>')
+def render_preview(doc_id):
+    pass
 
 # @app.route('/<title>')
 # def render_base(title):
