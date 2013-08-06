@@ -27,7 +27,14 @@ $(".publish").click(function() {
     alert("publish");
 });
 $(".preview").click(function() {
-    $("#previewModal").modal({
-        keyboard: true
+    url = "/preview/" + $(this).data("url");
+    $.ajax({
+        url: url,
+        success: function(result) {
+            $(".modal-body").html(result);
+            $("#previewModal").modal({
+                keyboard: true
+            });
+        }
     });
 });

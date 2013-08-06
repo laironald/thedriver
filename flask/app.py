@@ -27,7 +27,9 @@ app.jinja_env.hamlish_enable_div_shortcut = True
 def index():
     return render_template(
         'marketing.html',
-        title='GhostDocs (>")>')
+        title='GhostDocs (>")>',
+        googletitle="Testing",
+        googledoc="1TE0ouM01lsPvot5aZRDv9D7-xC-kLJ0dg3S_zPdWrO4")
 
 
 @app.route('/base')
@@ -63,7 +65,9 @@ def render_base(username, title):
         'marketing.html',
         title='<("<) | {0}'.format(title),
         iframe=f[0]["alternateLink"],
-        username=username)
+        username=username,
+        googletitle="Testing",
+        googledoc="1TE0ouM01lsPvot5aZRDv9D7-xC-kLJ0dg3S_zPdWrO4")
 
 
 @app.route('/preview/<doc_id>')
