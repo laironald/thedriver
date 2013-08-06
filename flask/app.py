@@ -62,13 +62,7 @@ def render_base(username, dochandle):
     if not doc:
         return "Weird stuff yo!"
     else:
-        return render_template(
-            'marketing.html',
-            title='<("<) | {0}'.format(doc.name),
-            iframe=doc.alternateLink,
-            username=doc.user.name,
-            googletitle=doc.name,
-            googledoc=doc.googledoc_id)
+        return render_template('marketing.html', doc=doc, user=doc.user)
 
 
 @app.route('/out/<username>/<dochandle>')

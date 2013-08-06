@@ -6,7 +6,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title>{{ title }}</title>
+        <title>&lt;("&lt;) | {{ doc.name }}</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -26,13 +26,13 @@
             <div class="modal-content">
               <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title">Preview: {{ googletitle }}</h4>
+                <h4 class="modal-title">Preview: {{ doc.name }}</h4>
               </div>
               <div class="modal-body">
                 
               </div>
               <div class="modal-footer">
-                <a href="#" data-url="{{ googledoc }}" data-dismiss="modal" class="btn btn-default publish">Publish</a>
+                <a href="#" data-url="{{ doc.googledoc_id }}" data-dismiss="modal" class="btn btn-default publish">Publish</a>
                 <a href="#" class="btn btn-primary" data-dismiss="modal">Close</a>
               </div>
             </div><!-- /.modal-content -->
@@ -52,8 +52,8 @@
                 <li class="divider-vertical"></li>
                 <li class="dropdown">
                   <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                    {% if username %}
-                      {{ username }}
+                    {% if user.name %}
+                      {{ user.name }}
                     {% else %} 
                       ghostie
                     {% endif %} 
@@ -93,10 +93,11 @@
                   </div>
                 </div>
                 <div class="btn-group">
-                  <button type="button" data-url="{{ googledoc }}" class="btn btn-default publish">Publish</button>
-                  <button type="button" data-url="{{ googledoc }}" class="btn btn-default preview">Preview</button>
+                  <button type="button" data-url="{{ doc.googledoc_id }}" class="btn btn-default publish">Publish</button>
+                  <button type="button" data-url="{{ doc.googledoc_id }}" class="btn btn-default preview">Preview</button>
                 </div>
                 <button type="button" class="btn btn-default">Settings</button>
+                <a href="/out/{{ user.handle }}/{{ doc.handle }}" target="blank" type="button" class="btn btn-link">Public URL</a>
               </div>
               <div class="col-4 text-center">
                 <div class="hide alert alert-success" id="status_message">Awesome. Successfully Published</div>
@@ -118,7 +119,7 @@
             <div class="row-fluid">
               <div class="col-12">
                 <br />
-                <iframe src="{% if iframe %}{{ iframe }}{% else %}www.google.com{% endif %}"
+                <iframe src="{% if doc.alternateLink %}{{ doc.alternateLink }}{% else %}www.google.com{% endif %}"
                   class="doc" frameborder="1" height="800" width="1200"></iframe>
               </div>
             </div>
