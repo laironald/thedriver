@@ -19,7 +19,7 @@ body .modal-dialog {
 }
 body .modal-body {
     /* todo make this height thing automatic */
-    height: 500px;
+    height: 480px;
     overflow: auto;
 }
 

@@ -41,14 +41,29 @@ $(".publish").click(function() {
     });
 });
 $(".preview").click(function() {
+    $("#previewModal").modal({
+        "keyboard": true
+    });
     url = "/preview/" + $(this).data("url");
     $.ajax({
         url: url,
         success: function(result) {
             $(".modal-body").html(result);
-            $("#previewModal").modal({
-                keyboard: true
-            });
+        }
+    });
+});
+$(".modal-header .nav-pills a").click(function() {
+    $(".modal-header .nav-pills li").removeClass("active");
+    $(this).parent("li").addClass("active");
+    if ($(this).html() == "Preview") {
+        url = "/preview/" + $(this).data("url");
+    } else {
+        url = "/view/" + $(this).data("url");
+    }
+    $.ajax({
+        url: url,
+        success: function(result) {
+            $(".modal-body").html(result);
         }
     });
 });

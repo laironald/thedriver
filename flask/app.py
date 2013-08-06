@@ -88,7 +88,8 @@ def render_view(doc_id):
 def render_preview(doc_id):
     # should be preview doc, but whatever
     # change this later
-    return di.view_doc(arg_google_doc_id=doc_id)
+    doc = di.load_doc(googledoc_id=doc_id).first()
+    return di.preview_doc(filedict=doc.htmlLink)
 
 
 @app.route('/publish/<doc_id>')
