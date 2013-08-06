@@ -1,5 +1,4 @@
 // per: https://gist.github.com/aarongustafson/1313517
-
 function adjustIframes()
 {
   $('iframe').each(function(){
@@ -22,6 +21,12 @@ function adjustIframes()
   });
 }
 $(window).on('resize load', adjustIframes);
+
+$(document).ready(function () {
+  $('.tip').hover(function() {
+    $(this).tooltip('show');
+  });
+});
 
 $(".publish").click(function() {
     url = "/publish/" + $(this).data("url");
