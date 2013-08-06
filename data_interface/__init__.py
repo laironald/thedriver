@@ -164,21 +164,22 @@ def publish_doc(user_id=None, filedict=None):
     Returns:
         Compiled HTML as a string.
     """
-    if not filedict:
-        filedict = list_google_docs()[0]
-
-    html_compiled = preview_doc(user_id, filedict)
-    # if we want to have a ghostdocs id, this might not
-    # be suffice. it probably is in this case
-    #  user_id and the doc_id
-
-    # probably need to revisit this in some capacity
     if type(filedict).__name__ == "dict":
+        if not filedict:
+            filedict = list_google_docs()[0]
+        # if we want to have a ghostdocs id, this might not
+        # be suffice. it probably is in this case
+        #  user_id and the doc_id
+
+        # probably need to revisit this in some capacity
         if not db_connector.doc_exist(filedict):
             db_connector.add_doc(filedict, user_id)
         doc_id = filedict["id"]
+        html_compiled = preview_doc(user_id, filedict)
     else:
+        doc = load_doc(googledoc_id=filedict).first()
         doc_id = filedict
+        html_compiled = preview_doc(user_id, doc.htmlLink)
 
     db_connector.update_doc(doc_id, html_compiled)
     return html_compiled
