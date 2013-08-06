@@ -8,17 +8,23 @@ def download(driv, drive_file):
     """Download a file's content.
     Args:
     drive_file: Drive File instance.
+      can be dictionary type (more verbose) or just
+      plain ol string
 
     Returns:
     File's content if successful, None otherwise.
     Directly from Google Drive API
     """
-    if "downloadUrl" in drive_file:
-        download_url = drive_file.get('downloadUrl')
-    elif "exportLinks" in drive_file:
-        download_url = drive_file["exportLinks"]["text/html"]
-    else:
-        download_url = None
+
+    download_url = None
+    if type(drive_file).__name__ == "dict":
+        if "downloadUrl" in drive_file:
+            download_url = drive_file.get('downloadUrl')
+        elif "exportLinks" in drive_file:
+            download_url = drive_file["exportLinks"]["text/html"]
+    elif type(drive_file).__name__ in ('str', 'unicode'):
+        download_url = drive_file
+
     if not download_url:
         return None
     resp, content = driv.service._http.request(download_url)
