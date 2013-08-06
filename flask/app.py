@@ -65,9 +65,11 @@ def render_base(username, title):
         iframe=f[0]["alternateLink"],
         username=username)
 
+
 @app.route('/preview/<doc_id>')
 def render_preview(doc_id):
     return di.view_doc(arg_google_doc_id=doc_id)
+
 
 # @app.route('/<title>')
 # def render_base(title):

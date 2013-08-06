@@ -29,6 +29,5 @@ $(".publish").click(function() {
 $(".preview").click(function() {
     $("#previewModal").modal({
         keyboard: true
-        /* remote: true */
     });
 });
