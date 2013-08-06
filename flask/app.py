@@ -23,11 +23,7 @@ app.jinja_env.hamlish_enable_div_shortcut = True
 
 @app.route('/')
 def index():
-    return render_template(
-        'index.html',
-        title='GhostDocs (>")>',
-        googletitle="Testing",
-        googledoc="1TE0ouM01lsPvot5aZRDv9D7-xC-kLJ0dg3S_zPdWrO4")
+    return render_template('welcome.html')
 
 
 # --- LOGIN / OUT ---
