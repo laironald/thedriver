@@ -135,8 +135,10 @@ class format():
 
         # 5)
         # Remove extraneous CSS markup
-        bodyclass = soup.body["class"]
-        self.html = re.sub(".%s[{].*?[}]" % bodyclass, "", self.html)
+        #bodyclass = soup.body["class"]
+        #self.html = re.sub(".%s[{].*?[}]" % bodyclass, "", self.html)
+
+        self.html = self.html.replace(";padding:72pt 72pt 72pt 72pt", "")
 
         # 6) TODO?
         """

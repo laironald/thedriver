@@ -11,7 +11,7 @@ from flask import send_from_directory
 import hamlish_jinja
 import json
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static', static_url_path='')
 app.debug = True
 
 app.jinja_env.add_extension(hamlish_jinja.HamlishExtension)
@@ -70,23 +70,6 @@ def publish_doc(doc_id):
     status["status"] = "success"
     return json.dumps(status)
 
-
-# --- STATIC FIXTURES ---
-# added these to help serve up the static files
-
-@app.route('/css/<path:filename>')
-def send_css(filename):
-    return send_from_directory('static/css', filename)
-
-
-@app.route('/js/<path:filename>')
-def send_js(filename):
-    return send_from_directory('static/js', filename)
-
-
-@app.route('/img/<path:filename>')
-def send_img(filename):
-    return send_from_directory('static/img', filename)
 
 # -----------------------
 
