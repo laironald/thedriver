@@ -46,6 +46,7 @@ $(".publish").click(function() {
     });
 });
 $(".preview").click(function() {
+    $("#previewModal").modal();
     $(".modal-header .nav-pills li").removeClass("active");
     $(".modal-header .nav-pills li.first").addClass("active");
     url = "/preview/" + $(this).data("url");
