@@ -2,9 +2,6 @@
 #consider Flask-Assets, but sometime later
 #https://github.com/Pitmairen/hamlish-jinja
 
-import sys
-sys.path.append("..")
-
 import data_interface as di
 from flask import Flask, render_template
 from flask import send_from_directory
