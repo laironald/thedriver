@@ -112,7 +112,7 @@ class GhostDBConnector():
         echo = config.get("global").get("echo")
         database = config.get("global").get("database")
         if database == "mysql":
-            self.engine = create_engine('mysql://{user}:{password}@{host}:3306/{database}'.format(**config.get(database)), echo=echo)
+            self.engine = create_engine('mysql://{user}:{password}@{host}:3306/{database}'.format(**config.get(database)), echo=echo, pool_recycle=3600)
         else:
             self.engine = create_engine('sqlite:///{path}/{database}'.format(**config.get(database)), echo=echo)
         Session = sessionmaker(bind=self.engine)

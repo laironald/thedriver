@@ -28,3 +28,9 @@ gotchas
 https://code.google.com/apis/console
 
  * need to enable both drive API and drive SKD
+
+
+ * need to avoid the error caused by a timed out connection to MySQL
+
+http://mofanim.wordpress.com/2013/01/02/sqlalchemy-mysql-has-gone-away/
+http://docs.sqlalchemy.org/en/rel_0_8/dialects/mysql.html#connection-timeouts
