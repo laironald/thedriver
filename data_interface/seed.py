@@ -15,5 +15,5 @@ doc = {
 doc = Document(**doc)
 user.document.append(doc)
 
-connector.session.merge(user)
-connector.session.commit()
+connector.session().merge(user)
+connector.session().commit()
