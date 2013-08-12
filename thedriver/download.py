@@ -76,7 +76,7 @@ class format():
                 if "ftnt_" in s.get("name"):
                     s.parent.extract()
                 elif "#ftnt_" in s.get("href"):
-                    s.parent.parent.parent.extract()
+                    #s.parent.parent.parent.extract()
                     s.parent.parent.extract()
         self.html = soup.encode("ascii")
 
