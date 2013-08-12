@@ -17,10 +17,10 @@ class TestDataInterface(unittest.TestCase):
                      'user_name':'jones',
                      'google_account':'thedriverjones',
                      'oauth_code':'somecode'}
-        if not di.db_connector.session.query(exists().where(db.User.name == 'jones')).scalar():
+        if not di.db_connector.session().query(exists().where(db.User.name == 'jones')).scalar():
                 di.add_user(**self.user)
                 pass
-        self.user['id'] = di.db_connector.session.query(db.User).filter(db.User.name=='jones').first().id
+        self.user['id'] = di.db_connector.session().query(db.User).filter(db.User.name=='jones').first().id
 
         file = di.list_google_docs()[0]
         di.load_doc(self.user['id']) # this adds one doc to the database

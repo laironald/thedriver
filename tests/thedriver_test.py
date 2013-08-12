@@ -20,7 +20,7 @@ class TestTheDriver(unittest.TestCase):
 
     def test_files(self):
         tot_files = len(self.g.files())
-        self.assertTrue(self.g.files(title="liwen") < tot_files)
+        self.assertTrue(len(self.g.files(title="liwen")) < tot_files)
 
 if __name__ == '__main__':
     unittest.main()

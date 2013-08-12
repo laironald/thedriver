@@ -119,8 +119,8 @@ def add_user(user_name, google_account, oauth_code):
     user = ghost_db.User(name=user_name,
                          google_account=google_account,
                          oauth_code=oauth_code)
-    db_connector.session.add(user)
-    db_connector.session.commit()
+    db_connector.session().add(user)
+    db_connector.session().commit()
 
 
 def preview_doc(user_id=None, filedict=None):

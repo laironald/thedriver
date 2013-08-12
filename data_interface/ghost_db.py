@@ -106,18 +106,32 @@ End of define.
 
 class GhostDBConnector():
     engine = None
-    session = None
+    _session = None
+    echo = None
+    database = None
 
     def __init__(self):
-        echo = config.get("global").get("echo")
-        database = config.get("global").get("database")
-        if database == "mysql":
-            self.engine = create_engine('mysql://{user}:{password}@{host}:3306/{database}'.format(**config.get(database)), echo=echo, pool_recycle=3600)
-        else:
-            self.engine = create_engine('sqlite:///{path}/{database}'.format(**config.get(database)), echo=echo)
-        Session = sessionmaker(bind=self.engine)
-        self.session = Session()
+        self.echo = config.get("global").get("echo")
+        self.database = config.get("global").get("database")
+        self.refresh_connection()
         self.CreateDB()
+
+    def session(self):
+
+        try:
+            self._session.execute('select 1')
+        except:
+            print 'refreshing connection'
+            self.refresh_connection()
+        return self._session
+
+    def refresh_connection(self):
+        if self.database == "mysql":
+            self.engine = create_engine('mysql://{user}:{password}@{host}:3306/{database}'.format(**config.get(self.database)), echo=self.echo, pool_recycle=3600)
+        else:
+            self.engine = create_engine('sqlite:///{path}/{database}'.format(**config.get(self.database)), echo=self.echo)
+        Session = sessionmaker(bind=self.engine)
+        self._session = Session()
 
     def CreateDB(self):
         ''' Create tables as defined above
@@ -152,8 +166,8 @@ class GhostDBConnector():
                        is_published=False,
                        user_id=user_id)
 
-        self.session.add(doc)
-        self.session.commit()
+        self.session().add(doc)
+        self.session().commit()
 
         return 0
 
@@ -172,24 +186,24 @@ class GhostDBConnector():
             return -1
         doc.html = html
         doc.is_published = True
-        self.session.commit()
+        self.session().commit()
         return 0
 
     def doc_exists(self, arg_googledoc_id):
-        flag = self.session.query(exists().where(Document.googledoc_id == arg_googledoc_id)).scalar()
+        flag = self.session().query(exists().where(Document.googledoc_id == arg_googledoc_id)).scalar()
         return flag
 
     def find_doc(self, arg_googledoc_id):
-        docs = self.session.query(Document).filter(Document.googledoc_id == arg_googledoc_id)
+        docs = self.session().query(Document).filter(Document.googledoc_id == arg_googledoc_id)
         return docs
 
     def list_ghost_docs(self, user_id):
-        docs = self.session.query(Document).filter(Document.user_id == user_id).all()
+        docs = self.session().query(Document).filter(Document.user_id == user_id).all()
         return docs
 
     def find_doc_by_user(self, username, dochandle):
         # TODO: might want to use join logic. maybe.
-        user = self.session.query(User).filter(User.handle == username)
+        user = self.session().query(User).filter(User.handle == username)
         if user.count():
             for doc in user.first().document:
                 if doc.handle == dochandle:
