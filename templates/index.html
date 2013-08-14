@@ -152,6 +152,11 @@
             s.parentNode.insertBefore(g,s)}(document,'script'));
         </script>
       -->
+        <script>
+          analytics.identify('{{ user.handle }}', {
+            name: '{{ user.name }}'
+          });
+        </script>
 
     </body>
 </html>
