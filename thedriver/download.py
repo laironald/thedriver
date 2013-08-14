@@ -27,7 +27,13 @@ def download(driv, drive_file):
 
     if not download_url:
         return None
-    resp, content = driv.service._http.request(download_url)
+    try:
+        resp, content = driv.service._http.request(download_url)
+    except:
+        print 'Error while downloading file. About to retry...'
+        content = download(driv, drive_file)
+        return content
+
     if resp.status == 200:
         return content
     else:
