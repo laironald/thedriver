@@ -29,7 +29,8 @@ body .modal-body {
 }
 
 .menubar {
-    height: 100px;
+    height: 80px;
+    overflow: hidden;
 }
 
 /* ==========================================================================
