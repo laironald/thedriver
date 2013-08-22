@@ -18,6 +18,7 @@ class User(Base):
     handle = Column(String(45), unique=True)
     google_account = Column(String(45))
     oauth_code = Column(String(45))
+    email = Column(String(45))
 
     document = relationship("Document", backref="user")
     folder = relationship("Folder", backref="user")
