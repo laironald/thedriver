@@ -103,8 +103,9 @@
               <div class="col-4 text-center">
                 <div class="hide alert alert-success" id="status_message">Awesome. Successfully Published</div>
               </div>
+            </div>
+            <div class="row-fluid">
               <div class="col-12">
-                <br />
                 <iframe src="{% if doc.alternateLink %}{{ doc.alternateLink }}{% else %}www.google.com{% endif %}"
                   class="doc" frameborder="1" height="800" width="1200"></iframe>
               </div>
@@ -127,11 +128,13 @@
 
         <script src="/js/vendor/bootstrap.min.js"></script>
         <script src="/js/main.js"></script>
-        <script>
-          analytics.identify('{{ user.handle }}', {
-            name: '{{ user.name }}'
-          });
-        </script>
+        {% if user.handle != "ghostie" %}
+          <script>
+            analytics.identify('{{ user.handle }}', {
+              name: '{{ user.name }}'
+            });
+          </script>
+        {% endif %}
 
     </body>
 </html>
