@@ -129,6 +129,10 @@
         <script src="/js/vendor/bootstrap.min.js"></script>
         <script src="/js/main.js"></script>
         <script>
+        /*
+          we would want to add email addres here
+          for customer.io access
+        */
         {% if user.handle != "ghostie" %}
             analytics.identify('{{ user.handle }}', {
               name: '{{ user.name }}',
