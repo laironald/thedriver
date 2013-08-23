@@ -2,6 +2,7 @@ import bs4
 #import difflib
 import os
 import re
+import time
 
 
 def download(driv, drive_file):
@@ -31,6 +32,7 @@ def download(driv, drive_file):
         resp, content = driv.service._http.request(download_url)
     except:
         print 'Error while downloading file. About to retry...'
+        time.sleep(0.5)
         content = download(driv, drive_file)
         return content
 
