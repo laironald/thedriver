@@ -4,7 +4,6 @@
 
 import data_interface as di
 from flask import Flask, render_template
-from flask import send_from_directory
 import hamlish_jinja
 import json
 

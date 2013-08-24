@@ -63,8 +63,13 @@ class GhostDBConnector():
         self.refresh_connection()
         self.CreateDB()
 
-    def session(self):
+    def commit(self):
+        """
+        Convenience method to call commit
+        """
+        
 
+    def session(self):
         try:
             self._session.execute('select 1')
         except:

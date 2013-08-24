@@ -63,7 +63,6 @@ def list_google_docs(user_id=None, if_hide_ghost_doc=True):
           u'title':u'Test' ... },
           {...}
         ]
-
     """
     files = user_session.drive.files()
     google_docs = filter(lambda f: f['mimeType'] == gdoc_mimeType
