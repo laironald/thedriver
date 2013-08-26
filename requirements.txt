@@ -5,3 +5,4 @@ Flask-Assets
 pyScss
 Hamlish-Jinja
 sqlalchemy
+unidecode
