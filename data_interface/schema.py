@@ -3,6 +3,7 @@ from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, Text
 from sqlalchemy import DateTime
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy import func
+from unidecode import unidecode
 
 
 ''' +++++++++++++++++++++++++++++++++++
@@ -39,6 +40,9 @@ class User(Base):
 
     document = relationship("Document", backref="user")
     folder = relationship("Folder", backref="user")
+
+    def __repr__(self):
+        return "<User('{0}')>".format(unidecode(self.name))
 
 
 class Document(Base):
@@ -81,6 +85,9 @@ class Document(Base):
     user_id = Column(Integer, ForeignKey('user.id'))
     folder_id = Column(Integer, ForeignKey('folder.id'))
 
+    def __repr__(self):
+        return "<Document('{0}')>".format(unidecode(self.name))
+
 
 class Folder(Base):
     __tablename__ = 'folder'
@@ -100,6 +107,10 @@ class Folder(Base):
 
     document = relationship("Document", backref="folder")
     child_folder = relationship("Folder", backref=backref("parent_folder", remote_side=[id]))
+
+    def __repr__(self):
+        return "<Folder('{0}')>".format(unidecode(self.name))
+
 
 ''' +++++++++++++++++++++++++++++++++++++++++++++
 End of define.
