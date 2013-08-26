@@ -76,7 +76,7 @@ class Document(Base):
     share_status = Column(Integer, default=0)
     time_created = Column(DateTime, default=func.now())
     time_updated = Column(DateTime, default=func.now(), onupdate=func.now())
-    time_opened = Column(DateTime)
+    time_opened = Column(DateTime, default=func.now())
 
     user_id = Column(Integer, ForeignKey('user.id'))
     folder_id = Column(Integer, ForeignKey('folder.id'))
