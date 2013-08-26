@@ -49,6 +49,14 @@ def check_auth(user_id):
     pass
 
 
+def update_doc_open(doc):
+    """
+    Update when the last time a document was open
+    """
+    db_connector.update_doc_open(doc)
+    pass
+
+
 def list_google_docs(user_id=None, if_hide_ghost_doc=True):
     """list a user's all editable google docs
 
@@ -72,7 +80,22 @@ def list_google_docs(user_id=None, if_hide_ghost_doc=True):
     return google_docs
 
 
-def list_recent_docs(user_id):
+def list_recent_docs(doc, number=10):
+    """
+    Return a list of documents that were recently opened
+
+    Args:
+        user: user that we want to check the docs of
+        doc: document we would like to ignore
+        number: the maximum number of documents to show
+    """
+    # research @ relationships where things are auto-sorted
+    # is this possible?
+    user = doc.user
+    docs = sorted(user.document, key=lambda doc: doc.time_opened, reverse=True)
+    if doc:
+        docs.pop(docs.index(doc))
+    return docs[:number]
     pass
 
 
