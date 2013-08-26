@@ -3,9 +3,10 @@
 #https://github.com/Pitmairen/hamlish-jinja
 
 import data_interface as di
-from flask import Flask, render_template
 import hamlish_jinja
 import json
+from datetime import datetime
+from flask import Flask, render_template
 
 app = Flask(__name__, static_folder='static', static_url_path='')
 app.debug = True
@@ -22,7 +23,7 @@ def index():
     return render_template('welcome.html')
 
 
-# --- LOGIN / OUT ---
+# --- EDIT DOC / PREVIEW DOC ---
 
 
 @app.route('/in/<username>/<dochandle>')
@@ -31,6 +32,7 @@ def render_base(username, dochandle):
     if not doc:
         return render_template("404.html")
     else:
+        di.update_doc_open(doc)
         return render_template('index.html', doc=doc, user=doc.user)
 
 
