@@ -18,6 +18,13 @@ docs = [{
     "htmlLink": "https://docs.google.com/feeds/download/documents/export/Export?id=1TE0ouM01lsPvot5aZRDv9D7-xC-kLJ0dg3S_zPdWrO4&exportFormat=html",
     "alternateLink": "https://docs.google.com/document/d/1TE0ouM01lsPvot5aZRDv9D7-xC-kLJ0dg3S_zPdWrO4/edit?usp=drivesdk",
     "html": "".join([x for x in open("temp/ron.html", "rb")])
+}, {
+    "name": "Testing File3",
+    "googledoc_id": "1TE0ouM01lsPvot5aZRDv9D7-xC-kLJ0dg3S_zPdWrO4",
+    "handle": "testing3",
+    "htmlLink": "https://docs.google.com/feeds/download/documents/export/Export?id=1TE0ouM01lsPvot5aZRDv9D7-xC-kLJ0dg3S_zPdWrO4&exportFormat=html",
+    "alternateLink": "https://docs.google.com/document/d/1TE0ouM01lsPvot5aZRDv9D7-xC-kLJ0dg3S_zPdWrO4/edit?usp=drivesdk",
+    "html": "".join([x for x in open("temp/ron.html", "rb")])
 }]
 
 for doc in docs:
