@@ -35,15 +35,16 @@ $(".publish").click(function() {
         url: url,
         dataType: "json",
         success: function() {
-            analytics.track('Published success', {url: url});
             $("#status_message").removeClass("alert-danger hide").addClass("alert-success").fadeIn("slow").html("Successfully Published").delay(800).fadeOut('slow');
+            analytics_status = "Published success";
         },
         error: function() {
-            analytics.track('Pubished failure', {url: url});
             $("#status_message").addClass("alert-danger").removeClass("hide alert-success").fadeIn("slow").html("Publishing Error: try again").delay(800).fadeOut('slow');
+            analytics_status = "Published failure";
         },
         complete: function() {
             $(".publish").removeAttr("disabled");
+            analytics.track(analytics_status, {url: url});
         }
     });
 });
