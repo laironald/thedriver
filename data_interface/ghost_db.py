@@ -2,6 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.sql import exists
 from schema import *
+from datetime import datetime
 
 ''' +++++++++++++++++++++++++++++++++++
 Set Configuration:
@@ -67,7 +68,7 @@ class GhostDBConnector():
         """
         Convenience method to call commit
         """
-        
+        self.session().commit()
 
     def session(self):
         try:
@@ -140,6 +141,13 @@ class GhostDBConnector():
         doc.is_published = True
         self.session().commit()
         return 0
+
+    def update_doc_open(self, doc):
+        """
+        Update when the last time a document was open
+        """
+        doc.time_opened = datetime.now()
+        self.commit()
 
     def doc_exists(self, arg_googledoc_id):
         flag = self.session().query(exists().where(Document.googledoc_id == arg_googledoc_id)).scalar()
