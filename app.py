@@ -32,8 +32,10 @@ def render_base(username, dochandle):
         return render_template("404.html")
     else:
         di.update_doc_open(doc)
-        di.list_recent_docs(doc)
-        return render_template('index.html', doc=doc, user=doc.user)
+        recent_docs = di.list_recent_docs(doc)
+        return render_template(
+            'index.html',
+            doc=doc, recent_docs=recent_docs, user=doc.user)
 
 
 @app.route('/out/<username>/<dochandle>')

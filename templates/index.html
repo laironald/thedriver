@@ -92,9 +92,9 @@
                       <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu">
-                      <li><a href="#">Recent File1</a></li>
-                      <li><a href="#">Recent File2</a></li>
-                      <li><a href="#">Recent File3</a></li>
+                      {% for d in recent_docs %}
+                        <li><a href="/in/{{ user.handle }}/{{ d.handle }}">{{ d.name }}</a></li>
+                      {% endfor %}
                       <li class="divider"></li>
                       <li><a href="#"><i class="i"></i> Convert from Google</a></li>
                      </ul>
