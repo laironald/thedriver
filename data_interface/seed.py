@@ -23,6 +23,6 @@ docs = [{
 for doc in docs:
     doc = Document(**doc)
     user.document.append(doc)
-    connector.session().merge(user)
 
+connector.session().merge(user)
 connector.session().commit()
