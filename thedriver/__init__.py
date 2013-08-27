@@ -2,6 +2,7 @@ import inspect
 import os
 import pickle
 import httplib2
+from apiclient import errors
 from apiclient.discovery import build
 
 current_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
@@ -41,6 +42,13 @@ class go():
         except:
             print "No service"
             return None
+
+    def file_by_id(self, file_id):
+        try:
+            data = self.service.files().get(fileId=file_id).execute()
+            return data
+        except errors.HttpError, error:
+            print 'An error occurred: %s' % error
 
     def files(self, **kwargs):
         """
