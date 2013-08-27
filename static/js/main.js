@@ -36,12 +36,15 @@ $(".publish").click(function() {
         dataType: "json",
         success: function() {
             $("#status_message").removeClass("alert-danger hide").addClass("alert-success").fadeIn("slow").html("Successfully Published").delay(800).fadeOut('slow');
+            analytics_status = "Published success";
         },
         error: function() {
             $("#status_message").addClass("alert-danger").removeClass("hide alert-success").fadeIn("slow").html("Publishing Error: try again").delay(800).fadeOut('slow');
+            analytics_status = "Published failure";
         },
         complete: function() {
             $(".publish").removeAttr("disabled");
+            analytics.track(analytics_status, {url: url});
         }
     });
 });
@@ -50,6 +53,7 @@ $(".preview").click(function() {
     $(".modal-header .nav-pills li.first").addClass("active");
     url = "/preview/" + $(this).data("url");
     $(".modal-body iframe").attr("src", url);
+    analytics.track('Previewed document', {url: url});
 });
 $(".modal-header .nav-pills a").click(function() {
     $(".modal-header .nav-pills li").removeClass("active");
@@ -61,4 +65,5 @@ $(".modal-header .nav-pills a").click(function() {
     }
     url = url + $(this).data("url");
     $(".modal-body iframe").attr("src", url);
+    analytics.track('Change preview option', {url: url});
 });

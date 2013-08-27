@@ -29,7 +29,11 @@ body .modal-body {
 }
 
 .menubar {
-    height: 100px;
+    height: 80px;
+}
+
+#status_message {
+    padding: 5px;
 }
 
 /* ==========================================================================

@@ -2,6 +2,7 @@ import bs4
 #import difflib
 import os
 import re
+import time
 
 
 def download(driv, drive_file):
@@ -27,7 +28,14 @@ def download(driv, drive_file):
 
     if not download_url:
         return None
-    resp, content = driv.service._http.request(download_url)
+    try:
+        resp, content = driv.service._http.request(download_url)
+    except:
+        print 'Error while downloading file. About to retry...'
+        time.sleep(0.5)
+        content = download(driv, drive_file)
+        return content
+
     if resp.status == 200:
         return content
     else:
@@ -139,50 +147,3 @@ class format():
         #self.html = re.sub(".%s[{].*?[}]" % bodyclass, "", self.html)
 
         self.html = self.html.replace(";padding:72pt 72pt 72pt 72pt", "")
-
-        # 6) TODO?
-        """
-        parentTag = None
-        soup = bs4.BeautifulSoup(self.html)
-        comments = re.findall(self.parse, self.html)
-        commentt = re.findall(self.parse, soup.text)
-        for c in comments:
-            print c
-        print ""
-
-        for tag in soup.body.findChildren():
-            if parentTag in tag.fetchParents():
-                continue
-
-            m = difflib.SequenceMatcher(None, str(tag), comments[0])
-            m = m.get_matching_blocks()[0]
-            n = difflib.SequenceMatcher(None, tag.text, commentt[0])
-            n = n.get_matching_blocks()[0]
-
-            if m.b == 0 and m.size:
-                print "==="
-                print comments[0]
-                print len(comments[0]), len(commentt[0])
-                # decision elimate everything OR keep tag?
-                if n.a == 0 and n.size == len(tag.text):
-                    tag.extract()
-                elif tag.string:
-                    tag.string.replace_with(tag.text[:n.a] + tag.text[n.a+n.size:])
-                else:
-                    newt = soup.new_tag("a")
-                    newt.string = "LiWeN"
-                    tag.replace_with(newt)
-
-                parentTag = tag
-                comments[0] = comments[0][m.size:]
-                commentt[0] = commentt[0][n.size:]
-
-                print len(comments[0]), len(commentt[0])
-                print tag
-
-            if not (comments[0] and commentt[0]):
-                comments.pop(0)
-                commentt.pop(0)
-        self.html = soup.encode("ascii")
-        """
-        pass
