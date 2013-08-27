@@ -22,6 +22,25 @@ function adjustIframes()
 }
 $(window).on('resize load', adjustIframes);
 
+// Google Picker
+    function createPicker() {
+        var picker = new google.picker.PickerBuilder().
+            addView(google.picker.ViewId.DOCUMENTS).
+            setCallback(pickerCallback).
+            build();
+        picker.setVisible(true);
+    }
+    // A simple callback implementation.
+    function pickerCallback(data) {
+      if (data[google.picker.Response.ACTION] == google.picker.Action.PICKED) {
+        var doc = data[google.picker.Response.DOCUMENTS][0];
+        url = doc[google.picker.Document.URL];
+        console.log(doc);
+      }
+    }
+
+// other stuff
+
 $(document).ready(function () {
   $('.tip').hover(function() {
     $(this).tooltip('show');
@@ -66,4 +85,7 @@ $(".modal-header .nav-pills a").click(function() {
     url = url + $(this).data("url");
     $(".modal-body iframe").attr("src", url);
     analytics.track('Change preview option', {url: url});
+});
+$("#from_google").click(function() {
+    createPicker();
 });

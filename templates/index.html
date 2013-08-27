@@ -13,6 +13,7 @@
         <link rel="stylesheet" href="/css/bootstrap.min.css">
         <link rel="stylesheet" href="/css/main.css">
 
+        <script src="http://www.google.com/jsapi"></script>
         <script src="/js/vendor/modernizr-2.6.2-respond-1.1.0.min.js"></script>
         {% if request.headers['Host'] != "localhost:5000" %}
             <script type="text/javascript">
@@ -25,7 +26,6 @@
         <!--[if lt IE 7]>
             <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
         <![endif]-->
-
         <!-- Modal -->
         <div class="modal fade" id="previewModal">
           <div class="modal-dialog">
@@ -78,7 +78,6 @@
           </div><!-- /.navbar-collapse -->
           </div>
         </nav>
-
         <div class="container">
           <div class="row-fluid">
             <div class="row-fluid menubar">
@@ -96,7 +95,7 @@
                         <li><a href="/in/{{ user.handle }}/{{ d.handle }}">{{ d.name }}</a></li>
                       {% endfor %}
                       <li class="divider"></li>
-                      <li><a href="#"><i class="i"></i> Convert from Google</a></li>
+                      <li><a href="#" id="from_google"><i class="i"></i> Convert from Google</a></li>
                      </ul>
                   </div>
                 </div>
@@ -136,6 +135,7 @@
         <script src="/js/vendor/bootstrap.min.js"></script>
         <script src="/js/main.js"></script>
         <script>
+          google.load('picker', '1');
         /*
           we would want to add email addres here
           for customer.io access
@@ -150,6 +150,5 @@
             doc : '{{ doc.handle }}'
           });
         </script>
-
     </body>
 </html>
