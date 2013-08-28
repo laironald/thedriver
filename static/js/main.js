@@ -34,8 +34,21 @@ $(window).on('resize load', adjustIframes);
     function pickerCallback(data) {
       if (data[google.picker.Response.ACTION] == google.picker.Action.PICKED) {
         var doc = data[google.picker.Response.DOCUMENTS][0];
-        url = doc[google.picker.Document.URL];
-        console.log(doc);
+        url = "/action/open_doc/" + doc["id"];
+        $.ajax({
+            url: url,
+            success: function() {
+                alert("done!");
+                analytics_status = "success";
+            },
+            error: function() {
+                analytics_status = "failure";
+            },
+            complete: function() {
+                analytics.track("Used GoogleDoc Picker",
+                    { url: url, status: analytics_status });
+            }
+        });
       }
     }
 
