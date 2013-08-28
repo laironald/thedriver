@@ -99,34 +99,6 @@ def list_recent_docs(doc, number=10):
     pass
 
 
-# def load_doc(user_id=None, google_doc_id=None):
-#     """
-#     return the meta data of a google doc. (the 'alternateLink' is used for embedding the iframe.
-
-#     Warning:  the default arg values user_id=None and google_doc_id=None are both for ease of testing.
-
-#     Args:
-#         user_id: GhostDoc user_id
-#         google_doc_id: id of the google doc
-
-#     Returns:
-#         meta data of a google doc.
-#     """
-#     if not user_id:  # remove this condition (it's only for testing)
-#         user_id = 1
-
-#     if google_doc_id:
-#         filedict = user_session.drive.service.files().get(fileId=google_doc_id).execute()
-#     else:  # TODO remove this else branch. (this else branch is only for testing)
-#         #file = user_session.drive.files(title="test")[0];
-#         filedict = list_google_docs()[0]
-#         google_doc_id = filedict['id']
-#     if not db_connector.doc_exists(google_doc_id):
-#         db_connector.add_doc(filedict, user_id)
-#     return filedict
-
-
-# this is an override for the function above
 def load_doc(username=None, dochandle=None, googledoc_id=None):
     if username and dochandle:
         return db_connector.find_doc_by_user(username, dochandle)
