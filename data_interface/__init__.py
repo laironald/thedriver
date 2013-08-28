@@ -49,6 +49,10 @@ def check_auth(user_id):
     pass
 
 
+def add_doc(doc):
+    pass
+
+
 def update_doc_open(doc):
     """
     Update when the last time a document was open
