@@ -5,7 +5,8 @@
 import data_interface as di
 import hamlish_jinja
 import json
-from flask import Flask, render_template, session
+from flask import Flask, render_template
+from flask import request, session
 
 app = Flask(__name__, static_folder='static', static_url_path='')
 app.debug = di.config.get("global").get("app_debug")
@@ -41,8 +42,11 @@ def open_doc(doc_id):
 
 @app.route('/action/settings/')
 def doc_settings():
-    user, doc = di.fetch_user_doc(session)
-    return json.dumps({})
+    if request.method == "GET":
+        user, doc = di.fetch_user_doc(session)
+        data = {"title": doc.name, "handle": doc.handle}
+
+    return json.dumps(data)
 
 
 # --- EDIT DOC / PREVIEW DOC ---
@@ -56,10 +60,8 @@ def render_base(username, dochandle):
     else:
         di.update_doc_open(doc)
         recent_docs = di.list_recent_docs(doc)
-        print session
         session["user"] = username
         session["doc"] = dochandle
-        print session
         return render_template(
             'index.html',
             doc=doc, recent_docs=recent_docs, user=doc.user)
