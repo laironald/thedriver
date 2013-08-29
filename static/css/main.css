@@ -4,6 +4,10 @@
    Author's custom styles
    ========================================================================== */
 
+html {
+    overflow-y: scroll;
+}
+
 iframe.doc {
     max-width: 100%;
     min-height: 100%;
