@@ -23,6 +23,13 @@ user_session = UserSession()
 
 # --------------------------------
 
+def fetch_user_doc(session):
+    user = db_connector.session().query(ghost_db.User).filter(ghost_db.User.handle == session["user"]).first()
+    for doc in user.document:
+        if doc.handle == session["doc"]:
+            break
+    return user, doc
+
 
 def list_ghost_docs(user_id):
     """ list a user's GhostDocs files

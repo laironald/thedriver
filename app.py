@@ -34,8 +34,14 @@ def temp():
 @app.route('/action/open_doc/<doc_id>')
 def open_doc(doc_id):
     data = di.user_session.drive.file_by_id(doc_id)
-    user = di.db_connector.session().query(di.ghost_db.User).filter(di.ghost_db.User.handle == session["user"])
+    user = di.db_connector.session().query(di.ghost_db.User).filter(di.ghost_db.User.handle == session["user"]).first()
     print data, user
+    return json.dumps({})
+
+
+@app.route('/action/settings/')
+def doc_settings():
+    user, doc = di.fetch_user_doc(session)
     return json.dumps({})
 
 
@@ -50,7 +56,10 @@ def render_base(username, dochandle):
     else:
         di.update_doc_open(doc)
         recent_docs = di.list_recent_docs(doc)
+        print session
         session["user"] = username
+        session["doc"] = dochandle
+        print session
         return render_template(
             'index.html',
             doc=doc, recent_docs=recent_docs, user=doc.user)
