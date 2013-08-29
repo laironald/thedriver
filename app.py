@@ -23,6 +23,11 @@ def index():
     return render_template('welcome.html')
 
 
+@app.route('/temp')
+def temp():
+    return render_template('temp.html')
+
+
 # --- API Calls for actions ---
 
 
