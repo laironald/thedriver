@@ -92,25 +92,25 @@ $(".publish").click(function() {
         }
     });
 });
-$(".preview").click(function() {
-    $(".modal-header .nav-pills li").removeClass("active");
-    $(".modal-header .nav-pills li.first").addClass("active");
-    url = "/preview/" + $(this).data("url");
-    $(".modal-body iframe").attr("src", url);
-    analytics.track('Previewed document', {url: url});
-});
-$(".modal-header .nav-pills a").click(function() {
-    $(".modal-header .nav-pills li").removeClass("active");
-    $(this).parent("li").addClass("active");
-    if ($(this).html() == "Preview") {
-        url = "/preview/";
-    } else {
-        url = "/view/";
-    }
-    url = url + $(this).data("url");
-    $(".modal-body iframe").attr("src", url);
-    analytics.track('Change preview option', {url: url});
-});
+// $(".preview").click(function() {
+//     $(".modal-header .nav-pills li").removeClass("active");
+//     $(".modal-header .nav-pills li.first").addClass("active");
+//     url = "/preview/" + $(this).data("url");
+//     $(".modal-body iframe").attr("src", url);
+//     analytics.track('Previewed document', {url: url});
+// });
+// $(".modal-header .nav-pills a").click(function() {
+//     $(".modal-header .nav-pills li").removeClass("active");
+//     $(this).parent("li").addClass("active");
+//     if ($(this).html() == "Preview") {
+//         url = "/preview/";
+//     } else {
+//         url = "/view/";
+//     }
+//     url = url + $(this).data("url");
+//     $(".modal-body iframe").attr("src", url);
+//     analytics.track('Change preview option', {url: url});
+// });
 $("#from_google").click(function() {
     createPicker();
 });
