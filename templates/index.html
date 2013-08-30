@@ -68,20 +68,21 @@
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 Settings
               </div>
-              <form class="form-horizontal" role="form">
+              <form class="form-horizontal" role="form" name="settingForm">
                 <div class="modal-body">
                   <div class="form-group">
-                    <label for="inputEmail1" class="col-lg-2 control-label">Title</label>
+                    <label class="col-lg-2 control-label">Title</label>
                     <div class="col-lg-10">
                       <input type="text" class="form-control" ng-model="data.settings.title">
                     </div>
                   </div>
                   <div class="form-group">
-                    <label for="inputPassword1" class="col-lg-2 control-label">Handle</label>
+                    <label class="col-lg-2 control-label">Handle</label>
                     <div class="col-lg-10">
-                      <input type="text" class="form-control" ng-model="data.settings.handle">
+                      <input type="text" name="handle" class="form-control" ng-model="data.settings.handle" ng-pattern="word">
                     </div>
                   </div>
+                  <div class="col-lg-10 col-lg-offset-2" ng-show="settingForm.handle.$error.pattern">Single word only!</div>
                   <div class="col-lg-10 col-lg-offset-2">
                     {% raw %}
                       {{data.settings.title}}
@@ -90,7 +91,7 @@
                   </div>
                 </div>
                 <div class="modal-footer">
-                  <a href="#" class="btn btn-default" data-dismiss="modal" ng-click="save()">Save</a>
+                  <a href="#" class="btn btn-default" data-dismiss="modal" ng-click="save()" ng-disabled="settingForm.handle.$error.pattern">Save</a>
                   <a href="#" class="btn btn-primary" data-dismiss="modal">Close</a>
                 </div>
               </form>

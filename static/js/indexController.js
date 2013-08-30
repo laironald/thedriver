@@ -21,6 +21,7 @@ function PreviewModalCtrl($scope, Data) {
 }
 function SettingModalCtrl($scope, $window, $http, Data) {
     $scope.data = Data;
+    $scope.word = /^\s*\w*\s*$/;
     $scope.save = function() {
         url = "/action/post/settings/" + $scope.data.doc_id;
         $http.post(url, $scope.data.settings).success(function() {

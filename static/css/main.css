@@ -31,6 +31,9 @@ iframe.doc {
     height: 480px;
     overflow: hidden;
 }
+#settingModal .modal-body {
+    overflow: auto;
+}
 
 .menubar {
     height: 80px;
