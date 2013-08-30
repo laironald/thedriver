@@ -44,9 +44,10 @@ def get_settings(doc_id):
 
 @app.route('/action/post/settings/<doc_id>', methods=["POST"])
 def set_settings(doc_id):
-    data = json.loads(request.data)
-    print doc_id
-    print data
+    doc = di.fetch_doc_by_id(session["user"], doc_id)
+    meta = json.loads(request.data)
+    # Need to check the handle to make sure its ok!
+    di.update_doc_meta(doc, meta)
     return json.dumps({})
 
 
