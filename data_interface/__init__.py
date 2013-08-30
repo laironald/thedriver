@@ -68,8 +68,24 @@ def check_auth(user_id):
     pass
 
 
-def add_doc(doc):
-    pass
+def add_doc(user, new_doc):
+    """
+    If document already exists, don't add it
+    """
+    for doc in user.document:
+        if doc.googledoc_id == new_doc["id"]:
+            return False
+
+    doc = ghost_db.Document({
+        "name": new_doc["title"],
+        "googledoc_id": new_doc["id"],
+        "handle": new_doc["id"],
+        "alternateLink": new_doc["alternateLink"],
+        "htmlLink": new_doc["exportLinks"]["text/html"]
+    })
+    user.document.append(doc)
+    db_connector.commit()
+    return True
 
 
 def update_doc_open(doc):

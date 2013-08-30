@@ -49,9 +49,10 @@ $(window).on('resize load', adjustIframes);
         url = "/action/open_doc/" + doc["id"];
         $.ajax({
             url: url,
-            success: function() {
-                alert("done!");
+            dataType: json,
+            success: function(data) {
                 analytics_status = "success";
+                alert(data);
             },
             error: function() {
                 analytics_status = "failure";
