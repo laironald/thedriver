@@ -142,13 +142,6 @@ class GhostDBConnector():
         self.session().commit()
         return 0
 
-    def update_doc_open(self, doc):
-        """
-        Update when the last time a document was open
-        """
-        doc.time_opened = datetime.now()
-        self.commit()
-
     def doc_exists(self, arg_googledoc_id):
         flag = self.session().query(exists().where(Document.googledoc_id == arg_googledoc_id)).scalar()
         return flag

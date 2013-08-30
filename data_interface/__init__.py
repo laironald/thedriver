@@ -1,6 +1,7 @@
 import ghost_db
 import thedriver
 import thedriver.download as drived
+from datetime import datetime
 
 
 db_connector = ghost_db.GhostDBConnector()
@@ -75,8 +76,16 @@ def update_doc_open(doc):
     """
     Update when the last time a document was open
     """
-    db_connector.update_doc_open(doc)
-    pass
+    doc.time_opened = datetime.now()
+    db_connector.commit()
+
+
+def update_doc_meta(doc, meta):
+    """
+    Update meta data of document
+    """
+    doc.handle = meta["handle"]
+    doc.name = meta["title"]
 
 
 def list_google_docs(user_id=None, if_hide_ghost_doc=True):
