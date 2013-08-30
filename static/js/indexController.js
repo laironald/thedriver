@@ -31,7 +31,7 @@ function SettingModalCtrl($scope, $window, $http, Data) {
             }
         });
         analytics.track('Saved settings',
-            {url: $scope.data.settings.handle});
+            {handle: $scope.data.settings.handle});
     };
 }
 function MenuClickCtrl($scope, $http, Data) {
