@@ -72,17 +72,17 @@
                 <div class="modal-body">
                   <div class="form-group">
                     <label class="col-lg-2 control-label">Title</label>
-                    <div class="col-lg-10">
+                    <div class="col-lg-6">
                       <input type="text" class="form-control" ng-model="data.settings.title">
                     </div>
                   </div>
                   <div class="form-group">
                     <label class="col-lg-2 control-label">Handle</label>
-                    <div class="col-lg-10">
+                    <div class="col-lg-6">
                       <input type="text" name="handle" class="form-control" ng-model="data.settings.handle" ng-pattern="word">
                     </div>
+                    <div class="col-lg-4 control-label" style="text-align: left;" ng-show="settingForm.handle.$error.pattern">Must be single word</div>
                   </div>
-                  <div class="col-lg-10 col-lg-offset-2 alert alert-danger" ng-show="settingForm.handle.$error.pattern">Handle must be a single word.</div>
                 </div>
                 <div class="modal-footer">
                   <a href="#" class="btn btn-default" data-dismiss="modal" ng-click="save()" ng-disabled="settingForm.handle.$error.pattern">Save</a>
@@ -131,7 +131,10 @@
           <div class="row-fluid">
             <div class="row-fluid menubar">
               <br />
-              <div class="col-md-8" ng-controller="MenuClickCtrl" >
+
+              <!-- menu bar -->
+
+              <div class="col-md-8" id="menubar" ng-controller="MenuClickCtrl">
                 <div class="btn-group">
                   <button type="button" class="btn btn-primary">New</button>
                   <div class="btn-group">
@@ -144,7 +147,7 @@
                         <li><a href="/in/{{ user.handle }}/{{ d.handle }}">{{ d.name }}</a></li>
                       {% endfor %}
                       <li class="divider"></li>
-                      <li><a href="#" id="from_google"><i class="i"></i> Convert from Google</a></li>
+                      <li><a href="#" ng-click="new_open()">Convert from Google</a></li>
                      </ul>
                   </div>
                 </div>
@@ -155,6 +158,8 @@
                 <button type="button" class="btn btn-default" data-toggle="modal" data-target="#settingModal" ng-click="settings('{{ doc.googledoc_id }}')">Settings</button>
                 <a href="/out/{{ user.handle }}/{{ doc.handle }}" target="blank" type="button" class="btn btn-link">Public URL</a>
               </div>
+
+
               <div class="col-md-4 text-center">
                 <div class="hide alert alert-success" id="status_message">Awesome. Successfully Published</div>
               </div>

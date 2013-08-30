@@ -51,4 +51,11 @@ function MenuClickCtrl($scope, $http, Data) {
             $scope.data.settings = data;
         });
     };
+    $scope.new_open = function() {
+        var picker = new google.picker.PickerBuilder().
+            addView(google.picker.ViewId.DOCUMENTS).
+            setCallback(pickerCallback).
+            build();
+        picker.setVisible(true);
+    };
 }

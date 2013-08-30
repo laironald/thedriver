@@ -22,30 +22,10 @@ function adjustIframes()
 }
 $(window).on('resize load', adjustIframes);
 
-// Google Picker
-    function createPicker() {
-        var picker = new google.picker.PickerBuilder().
-            addView(google.picker.ViewId.DOCUMENTS).
-            setCallback(pickerCallback).
-            build();
-        picker.setVisible(true);
-    }
     // A simple callback implementation.
-    function pickerCallback(data) {
+    function pickerCallback(data, scope) {
       if (data[google.picker.Response.ACTION] == google.picker.Action.PICKED) {
         var doc = data[google.picker.Response.DOCUMENTS][0];
-        // doc looks like:
-        // description: ""
-        // embedUrl: "https://docs.google.com/document/d/1TE0ouM01lsPvot5aZRDv9D7-xC-kLJ0dg3S_zPdWrO4/preview"
-        // iconUrl: "https://ssl.gstatic.com/docs/doclist/images/icon_11_document_list.png"
-        // id: "1TE0ouM01lsPvot5aZRDv9D7-xC-kLJ0dg3S_zPdWrO4"
-        // lastEditedUtc: 1377551977900
-        // mimeType: "application/vnd.google-apps.document"
-        // name: "Testing"
-        // serviceId: "doc"
-        // type: "document"
-        // url: "https://docs.google.com/document/d/1TE0ouM01lsPvot5aZRDv9D7-xC-kLJ0dg3S_zPdWrO4/edit?usp=drive_web"
-
         url = "/action/open_doc/" + doc["id"];
         $.ajax({
             url: url,
@@ -98,7 +78,4 @@ $(".publish").click(function() {
             analytics.track(analytics_status, {url: url});
         }
     });
-});
-$("#from_google").click(function() {
-    createPicker();
 });
