@@ -22,9 +22,10 @@ function PreviewModalCtrl($scope, Data) {
 function SettingModalCtrl($scope, $window, $http, Data) {
     $scope.data = Data;
     $scope.save = function() {
-        data = {"ron": "ron"};
         url = "/action/post/settings/" + $scope.data.doc_id;
-        $http.post(url, data).success(function() {
+        $http.post(url, $scope.data.settings).success(function() {
+            new_url = $window.location.href.replace("/");
+            alert(new_url);
             // $window.location.href = "/in/ghostie/testing";
         });
         analytics.track('Saved settings',
