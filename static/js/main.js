@@ -49,10 +49,16 @@ $(window).on('resize load', adjustIframes);
         url = "/action/open_doc/" + doc["id"];
         $.ajax({
             url: url,
-            dataType: json,
+            dataType: "json",
             success: function(data) {
                 analytics_status = "success";
-                alert(data);
+                if (data["status"]) {
+                    // how do we open this modal and set it up properly?
+                    // $("#settingModal").modal();
+                    current_url = location.href;
+                    current_doc = _.last(current_url.split("/"));
+                    location.href = current_url.replace("/"+current_doc, "/"+doc["id"]);
+                }
             },
             error: function() {
                 analytics_status = "failure";

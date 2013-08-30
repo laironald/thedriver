@@ -76,7 +76,8 @@ def add_doc(user, new_doc):
         if doc.googledoc_id == new_doc["id"]:
             return False
 
-    doc = ghost_db.Document({
+    print new_doc
+    doc = ghost_db.Document(**{
         "name": new_doc["title"],
         "googledoc_id": new_doc["id"],
         "handle": new_doc["id"],
@@ -244,4 +245,7 @@ def view_doc(user_id=None, arg_google_doc_id=None):
 
     doc = db_connector.find_doc(arg_google_doc_id)[0]
     html = doc.html
-    return html
+    if not html:
+        return "No published document"
+    else:
+        return html

@@ -31,7 +31,7 @@ def index():
 def open_doc(doc_id):
     data = di.user_session.drive.file_by_id(doc_id)
     user = di.db_connector.session().query(di.ghost_db.User).filter(di.ghost_db.User.handle == session["user"]).first()
-    json.dumps({"status": di.add_doc(user, data)})
+    return json.dumps({"status": di.add_doc(user, data)})
 
 
 @app.route('/action/get/settings/<doc_id>/', methods=["GET"])

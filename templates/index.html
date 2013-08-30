@@ -79,12 +79,10 @@
                   <div class="form-group">
                     <label class="col-lg-2 control-label">Handle</label>
                     <div class="col-lg-10">
-                      <input type="text" name="handle" class="error form-control" ng-model="data.settings.handle" ng-pattern="word">
+                      <input type="text" name="handle" class="form-control" ng-model="data.settings.handle" ng-pattern="word">
                     </div>
                   </div>
                   <div class="col-lg-10 col-lg-offset-2 alert alert-danger" ng-show="settingForm.handle.$error.pattern">Handle must be a single word.</div>
-                  <div class="col-lg-10 col-lg-offset-2">
-                  </div>
                 </div>
                 <div class="modal-footer">
                   <a href="#" class="btn btn-default" data-dismiss="modal" ng-click="save()" ng-disabled="settingForm.handle.$error.pattern">Save</a>
