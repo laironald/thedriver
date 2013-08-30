@@ -35,13 +35,18 @@ def open_doc(doc_id):
     return json.dumps({})
 
 
-@app.route('/action/settings/')
-def doc_settings():
-    if request.method == "GET":
-        user, doc = di.fetch_user_doc(session)
-        data = {"title": doc.name, "handle": doc.handle}
-
+@app.route('/action/get/settings/', methods=["GET"])
+def get_settings():
+    user, doc = di.fetch_user_doc(session)
+    data = {"title": doc.name, "handle": doc.handle}
     return json.dumps(data)
+
+
+@app.route('/action/post/settings', methods=["POST"])
+def set_settings():
+    print request.form
+    print request.form["ron"]
+    return json.dumps({})
 
 
 # --- EDIT DOC / PREVIEW DOC ---
