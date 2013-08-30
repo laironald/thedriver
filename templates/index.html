@@ -42,8 +42,8 @@
               <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 <ul class="nav nav-pills">
-                  <li ng-class="{active: (data.action == 0)}"><a href="#" ng-click="preview('{{ doc.googledoc_id }}')">Preview</a></li>
-                  <li ng-class="{active: (data.action == 1)}"><a href="#" ng-click="publish('{{ doc.googledoc_id }}')">Published</a></li>
+                  <li ng-class="{active: (data.action == 0)}"><a href="#" ng-click="preview()">Preview</a></li>
+                  <li ng-class="{active: (data.action == 1)}"><a href="#" ng-click="publish()">Published</a></li>
                 </ul>
               </div>
               <div class="modal-body">
@@ -55,9 +55,11 @@
                 <a href="#" data-url="{{ doc.googledoc_id }}" data-dismiss="modal" class="btn btn-default publish">Publish</a>
                 <a href="#" class="btn btn-primary" data-dismiss="modal">Close</a>
               </div>
-            </div><!-- /.modal-content -->
-          </div><!-- /.modal-dialog -->
-        </div><!-- /.modal -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Setting -->
 
         <div class="modal fade" id="settingModal" ng-controller="SettingModalCtrl">
           <div class="modal-dialog">
@@ -86,18 +88,18 @@
                       /{{data.settings.handle}}
                     {% endraw %}
                   </div>
-
                 </div>
                 <div class="modal-footer">
                   <a href="#" class="btn btn-default" data-dismiss="modal" ng-click="save()">Save</a>
                   <a href="#" class="btn btn-primary" data-dismiss="modal">Close</a>
                 </div>
               </form>
-            </div><!-- /.modal-content -->
-          </div><!-- /.modal-dialog -->
-        </div><!-- /.modal -->
+            </div>
+          </div>
+        </div>
 
         <!-- End Modal -->
+
 
 
         <nav class="navbar navbar-default">
@@ -155,7 +157,7 @@
                   <button type="button" data-url="{{ doc.googledoc_id }}" class="btn btn-default publish">Publish</button>
                   <button type="button" data-url="{{ doc.googledoc_id }}" class="btn btn-default preview" data-toggle="modal" data-target="#previewModal" ng-click="preview('{{ doc.googledoc_id }}')">Preview</button>
                 </div>
-                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#settingModal" ng-click="settings()">Settings</button>
+                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#settingModal" ng-click="settings('{{ doc.googledoc_id }}')">Settings</button>
                 <a href="/out/{{ user.handle }}/{{ doc.handle }}" target="blank" type="button" class="btn btn-link">Public URL</a>
               </div>
               <div class="col-md-4 text-center">
