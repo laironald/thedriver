@@ -23,6 +23,17 @@ user_session = UserSession()
 
 # --------------------------------
 
+def fetch_doc_by_id(username, doc_id):
+    """
+    Return a document by the doc_id
+    Also requires the username so we fetch the right one
+        (in case there is a duplicate doc that exists)
+    """
+    for doc in db_connector.session().query(ghost_db.Document).filter(ghost_db.Document.googledoc_id == doc_id):
+        if doc.user.handle == username:
+            return doc
+
+
 def fetch_user_doc(session):
     user = db_connector.session().query(ghost_db.User).filter(ghost_db.User.handle == session["user"]).first()
     for doc in user.document:
