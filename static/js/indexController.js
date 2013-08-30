@@ -24,9 +24,11 @@ function SettingModalCtrl($scope, $window, $http, Data) {
     $scope.save = function() {
         url = "/action/post/settings/" + $scope.data.doc_id;
         $http.post(url, $scope.data.settings).success(function() {
-            new_url = $window.location.href.replace("/");
-            alert(new_url);
-            // $window.location.href = "/in/ghostie/testing";
+            current_url = $window.location.href;
+            current_doc = _.last(current_url.split("/"));
+            if (current_doc != $scope.data.settings.handle) {
+                $window.location.href = current_url.replace("/"+current_doc, "/"+$scope.data.settings.handle);
+            }
         });
         analytics.track('Saved settings',
             {url: $scope.data.settings.handle});
