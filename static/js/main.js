@@ -23,7 +23,7 @@ function adjustIframes()
 $(window).on('resize load', adjustIframes);
 
     // A simple callback implementation.
-    function pickerCallback(data, scope) {
+    function pickerCallback(data) {
       if (data[google.picker.Response.ACTION] == google.picker.Action.PICKED) {
         var doc = data[google.picker.Response.DOCUMENTS][0];
         url = "/action/open_doc/" + doc["id"];
