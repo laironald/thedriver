@@ -15,13 +15,14 @@ app.jinja_env.add_extension(hamlish_jinja.HamlishExtension)
 app.jinja_env.hamlish_enable_div_shortcut = True
 app.secret_key = di.config.get("global").get("secret")
 
+CLIENT_ID = json.loads(open('client_secrets.json','r').read())['web']['client_id']
 
 # url_for('static', filename='all.css')
 
 
 @app.route('/')
 def index():
-    return render_template('welcome.html')
+    return render_template('welcome.html', CLIENT_ID=CLIENT_ID)
 
 
 # --- API Calls for actions ---
@@ -65,7 +66,7 @@ def render_base(username, dochandle):
         session["doc"] = dochandle
         return render_template(
             'index.html',
-            doc=doc, recent_docs=recent_docs, user=doc.user)
+            doc=doc, recent_docs=recent_docs, user=doc.user, CLIENT_ID=CLIENT_ID)
 
 
 @app.route('/out/<username>/<dochandle>')

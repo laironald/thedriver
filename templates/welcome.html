@@ -22,6 +22,20 @@
         {% endif %}
     </head>
     <body>
+
+        <!-- signin button -->
+	<span id="signinButton">
+	  <span
+	    class="g-signin"
+            data-scope="https://www.googleapis.com/auth/drive"
+            data-clientId="{{ CLIENT_ID }}"
+            data-accesstype="offline"
+            data-callback="onSignInCallback"
+            data-theme="dark"
+            data-cookiepolicy="single_host_origin">
+	  </span>
+	</span>
+
         <!--[if lt IE 7]>
             <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
         <![endif]-->
@@ -87,6 +101,17 @@
         <script src="/js/main.js"></script>
         <script>
           analytics.track('Loaded welcome page');
+        </script>
+
+        <!-- google+ script --> 
+        <script type="text/javascript">
+        (function() {
+          var po = document.createElement('script'); 
+          po.type = 'text/javascript'; po.async = true;
+          po.src = 'https://apis.google.com/js/client:plusone.js';
+          var s = document.getElementsByTagName('script')[0];
+          s.parentNode.insertBefore(po, s);
+        })();
         </script>
 
     </body>
