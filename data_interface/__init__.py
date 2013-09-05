@@ -1,6 +1,7 @@
 import ghost_db
 import thedriver
 import thedriver.download as drived
+from datetime import datetime
 
 
 db_connector = ghost_db.GhostDBConnector()
@@ -22,6 +23,24 @@ user_session = UserSession()
 
 
 # --------------------------------
+
+def fetch_doc_by_id(username, doc_id):
+    """
+    Return a document by the doc_id
+    Also requires the username so we fetch the right one
+        (in case there is a duplicate doc that exists)
+    """
+    for doc in db_connector.session().query(ghost_db.Document).filter(ghost_db.Document.googledoc_id == doc_id):
+        if doc.user.handle == username:
+            return doc
+
+
+def fetch_user_doc(session):
+    user = db_connector.session().query(ghost_db.User).filter(ghost_db.User.handle == session["user"]).first()
+    for doc in user.document:
+        if doc.handle == session["doc"]:
+            break
+    return user, doc
 
 
 def list_ghost_docs(user_id):
@@ -49,12 +68,41 @@ def check_auth(user_id):
     pass
 
 
+def add_doc(user, new_doc):
+    """
+    If document already exists, don't add it
+    """
+    for doc in user.document:
+        if doc.googledoc_id == new_doc["id"]:
+            return False
+
+    print new_doc
+    doc = ghost_db.Document(**{
+        "name": new_doc["title"],
+        "googledoc_id": new_doc["id"],
+        "handle": new_doc["id"],
+        "alternateLink": new_doc["alternateLink"],
+        "htmlLink": new_doc["exportLinks"]["text/html"]
+    })
+    user.document.append(doc)
+    db_connector.commit()
+    return True
+
+
 def update_doc_open(doc):
     """
     Update when the last time a document was open
     """
-    db_connector.update_doc_open(doc)
-    pass
+    doc.time_opened = datetime.now()
+    db_connector.commit()
+
+
+def update_doc_meta(doc, meta):
+    """
+    Update meta data of document
+    """
+    doc.handle = meta["handle"]
+    doc.name = meta["title"]
 
 
 def list_google_docs(user_id=None, if_hide_ghost_doc=True):
@@ -99,34 +147,6 @@ def list_recent_docs(doc, number=10):
     pass
 
 
-# def load_doc(user_id=None, google_doc_id=None):
-#     """
-#     return the meta data of a google doc. (the 'alternateLink' is used for embedding the iframe.
-
-#     Warning:  the default arg values user_id=None and google_doc_id=None are both for ease of testing.
-
-#     Args:
-#         user_id: GhostDoc user_id
-#         google_doc_id: id of the google doc
-
-#     Returns:
-#         meta data of a google doc.
-#     """
-#     if not user_id:  # remove this condition (it's only for testing)
-#         user_id = 1
-
-#     if google_doc_id:
-#         filedict = user_session.drive.service.files().get(fileId=google_doc_id).execute()
-#     else:  # TODO remove this else branch. (this else branch is only for testing)
-#         #file = user_session.drive.files(title="test")[0];
-#         filedict = list_google_docs()[0]
-#         google_doc_id = filedict['id']
-#     if not db_connector.doc_exists(google_doc_id):
-#         db_connector.add_doc(filedict, user_id)
-#     return filedict
-
-
-# this is an override for the function above
 def load_doc(username=None, dochandle=None, googledoc_id=None):
     if username and dochandle:
         return db_connector.find_doc_by_user(username, dochandle)
@@ -225,4 +245,7 @@ def view_doc(user_id=None, arg_google_doc_id=None):
 
     doc = db_connector.find_doc(arg_google_doc_id)[0]
     html = doc.html
-    return html
+    if not html:
+        return "No published document"
+    else:
+        return html

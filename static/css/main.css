@@ -4,6 +4,10 @@
    Author's custom styles
    ========================================================================== */
 
+html {
+    overflow-y: scroll;
+}
+
 iframe.doc {
     max-width: 100%;
     min-height: 100%;
@@ -15,17 +19,20 @@ iframe.doc {
     border: 0px none;
 }
 
-body .modal {
+#previewModal .modal {
     width: 800px;
     margin-left: 320px;
 }
-body .modal-dialog {
+#previewModal .modal-dialog {
     width: 800px;
 }
-body .modal-body {
+#previewModal .modal-body {
     /* todo make this height thing automatic */
     height: 480px;
     overflow: hidden;
+}
+#settingModal .modal-body {
+    overflow: auto;
 }
 
 .menubar {

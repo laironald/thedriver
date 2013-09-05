@@ -6,12 +6,14 @@ import data_interface as di
 import hamlish_jinja
 import json
 from flask import Flask, render_template
+from flask import request, session
 
 app = Flask(__name__, static_folder='static', static_url_path='')
-app.debug = True
+app.debug = di.config.get("global").get("app_debug")
 
 app.jinja_env.add_extension(hamlish_jinja.HamlishExtension)
 app.jinja_env.hamlish_enable_div_shortcut = True
+app.secret_key = di.config.get("global").get("secret")
 
 
 # url_for('static', filename='all.css')
@@ -20,6 +22,32 @@ app.jinja_env.hamlish_enable_div_shortcut = True
 @app.route('/')
 def index():
     return render_template('welcome.html')
+
+
+# --- API Calls for actions ---
+
+
+@app.route('/action/open_doc/<doc_id>')
+def open_doc(doc_id):
+    data = di.user_session.drive.file_by_id(doc_id)
+    user = di.db_connector.session().query(di.ghost_db.User).filter(di.ghost_db.User.handle == session["user"]).first()
+    return json.dumps({"status": di.add_doc(user, data)})
+
+
+@app.route('/action/get/settings/<doc_id>/', methods=["GET"])
+def get_settings(doc_id):
+    doc = di.fetch_doc_by_id(session["user"], doc_id)
+    data = {"title": doc.name, "handle": doc.handle}
+    return json.dumps(data)
+
+
+@app.route('/action/post/settings/<doc_id>', methods=["POST"])
+def set_settings(doc_id):
+    doc = di.fetch_doc_by_id(session["user"], doc_id)
+    meta = json.loads(request.data)
+    # Need to check the handle to make sure its ok!
+    di.update_doc_meta(doc, meta)
+    return json.dumps({})
 
 
 # --- EDIT DOC / PREVIEW DOC ---
@@ -33,6 +61,8 @@ def render_base(username, dochandle):
     else:
         di.update_doc_open(doc)
         recent_docs = di.list_recent_docs(doc)
+        session["user"] = username
+        session["doc"] = dochandle
         return render_template(
             'index.html',
             doc=doc, recent_docs=recent_docs, user=doc.user)

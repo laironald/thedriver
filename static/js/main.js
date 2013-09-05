@@ -22,6 +22,37 @@ function adjustIframes()
 }
 $(window).on('resize load', adjustIframes);
 
+    // A simple callback implementation.
+    function pickerCallback(data) {
+      if (data[google.picker.Response.ACTION] == google.picker.Action.PICKED) {
+        var doc = data[google.picker.Response.DOCUMENTS][0];
+        url = "/action/open_doc/" + doc["id"];
+        $.ajax({
+            url: url,
+            dataType: "json",
+            success: function(data) {
+                analytics_status = "success";
+                if (data["status"]) {
+                    // how do we open this modal and set it up properly?
+                    // $("#settingModal").modal();
+                    current_url = location.href;
+                    current_doc = _.last(current_url.split("/"));
+                    location.href = current_url.replace("/"+current_doc, "/"+doc["id"]);
+                }
+            },
+            error: function() {
+                analytics_status = "failure";
+            },
+            complete: function() {
+                analytics.track("Used GoogleDoc Picker",
+                    { url: url, status: analytics_status });
+            }
+        });
+      }
+    }
+
+// other stuff
+
 $(document).ready(function () {
   $('.tip').hover(function() {
     $(this).tooltip('show');
@@ -47,23 +78,4 @@ $(".publish").click(function() {
             analytics.track(analytics_status, {url: url});
         }
     });
-});
-$(".preview").click(function() {
-    $(".modal-header .nav-pills li").removeClass("active");
-    $(".modal-header .nav-pills li.first").addClass("active");
-    url = "/preview/" + $(this).data("url");
-    $(".modal-body iframe").attr("src", url);
-    analytics.track('Previewed document', {url: url});
-});
-$(".modal-header .nav-pills a").click(function() {
-    $(".modal-header .nav-pills li").removeClass("active");
-    $(this).parent("li").addClass("active");
-    if ($(this).html() == "Preview") {
-        url = "/preview/";
-    } else {
-        url = "/view/";
-    }
-    url = url + $(this).data("url");
-    $(".modal-body iframe").attr("src", url);
-    analytics.track('Change preview option', {url: url});
 });
