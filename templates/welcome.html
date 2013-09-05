@@ -27,7 +27,7 @@
 	<span id="signinButton">
 	  <span
 	    class="g-signin"
-            data-scope="https://www.googleapis.com/auth/drive"
+            data-scope="email https://www.googleapis.com/auth/drive"
             data-clientId="{{ CLIENT_ID }}"
             data-accesstype="offline"
             data-callback="onSignInCallback"
@@ -38,14 +38,25 @@
 
 	<script>
 	function onSignInCallback(authResult){
+	
 	if (authResult['access_token']) {
 		// The user is signed in
 		this.authResult = authResult;
 		document.getElementById('signinButton').setAttribute('style', 'display: none');
+		//window.location.replace('http://www.google.com');
+		//window.location.replace(window.location.href + '/connect?state={{ STATE }});
+		$.ajax({
+			type: 'POST',
+			url: window.location.href + '/connect?state={{ STATE }}',
+			contentType: 'application/octet-stream; charset=utf-8',
+			data: this.authResult.code
+		      });
+
 		// helper.connectServer();
 		// After we load the Google+ API, render the profile data from Google+.
 		//gapi.client.load('plus','v1',this.renderProfile);
 	      } else if (authResult['error']) {
+		//window.location.replace('http://error');
 		// There was an error, which means the user is not signed in.
 		// As an example, you can troubleshoot by writing to the console:
 		//console.log('There was an error: ' + authResult['error']);
