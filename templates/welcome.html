@@ -36,6 +36,27 @@
 	  </span>
 	</span>
 
+	<script>
+	function onSignInCallback(authResult){
+	if (authResult['access_token']) {
+		// The user is signed in
+		this.authResult = authResult;
+		document.getElementById('signinButton').setAttribute('style', 'display: none');
+		// helper.connectServer();
+		// After we load the Google+ API, render the profile data from Google+.
+		//gapi.client.load('plus','v1',this.renderProfile);
+	      } else if (authResult['error']) {
+		// There was an error, which means the user is not signed in.
+		// As an example, you can troubleshoot by writing to the console:
+		//console.log('There was an error: ' + authResult['error']);
+		//$('#authResult').append('Logged out');
+		//$('#authOps').hide('slow');
+		//$('#gConnect').show();
+	      }
+
+	}
+	</script>
+
         <!--[if lt IE 7]>
             <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
         <![endif]-->
