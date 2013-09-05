@@ -5,8 +5,15 @@
 import data_interface as di
 import hamlish_jinja
 import json
+import random
+import string
+import httplib2
+
 from flask import Flask, render_template
 from flask import request, session
+from flask import make_response
+from oauth2client.client import flow_from_clientsecrets
+from oauth2client.client import OAuth2WebServerFlow
 
 app = Flask(__name__, static_folder='static', static_url_path='')
 app.debug = di.config.get("global").get("app_debug")
@@ -22,12 +29,45 @@ CLIENT_ID = json.loads(open('client_secrets.json','r').read())['web']['client_id
 
 @app.route('/')
 def index():
-    return render_template('welcome.html', CLIENT_ID=CLIENT_ID)
+    '''Initialize a session for the current user, and render welcome.html.'''
+    # Create a state token.
+    state = ''.join(random.choice(string.ascii_uppercase + string.digits)
+                    for x in xrange(32))
+    session['state'] = state
+    return render_template('welcome.html', STATE = state, CLIENT_ID=CLIENT_ID)
+
+
+
+# --- login callback ---
+@app.route('/connect', methods=['POST'])
+def callback_handler():
+    # Ensure that the request is not a forgery and that the user sending
+    # this connect request is the expected user.
+    if request.args.get('state', '') != session['state']:
+        response = make_response(json.dumps('Invalid state parameter.'), 401)
+        response.headers['Content-Type'] = 'applicatoin/json'
+        return response
+    
+    try:
+        oauth_code = request.data
+        flow = flow_from_clientsecrets('client_secrets.json', scope='')
+        flow.redirect_uri = 'postmessage'
+        credentials = flow.step2_exchange(oauth_code)
+    except FlowExchangeError:
+        response = make_response(
+            json.dumps('Failed to upgrade the authorization code.'),401)
+        response.headers['Content-Type'] = 'application/json'
+        return response
+
+    print 'logged in as: ' + credentials.id_token['email']
+    http = httplib2.Http()
+    http = credentials.authorize(http)
+
+    return render_template("welcome.html")
+
 
 
 # --- API Calls for actions ---
-
-
 @app.route('/action/open_doc/<doc_id>')
 def open_doc(doc_id):
     data = di.user_session.drive.file_by_id(doc_id)
