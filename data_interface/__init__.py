@@ -154,7 +154,7 @@ def load_doc(username=None, dochandle=None, googledoc_id=None):
         return db_connector.find_doc(googledoc_id)
 
 
-def add_user(user_name, google_account, oauth_code):
+def create_user(user_name, google_account, oauth_code):
     """
     register a new GhostDocs user
     """

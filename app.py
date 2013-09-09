@@ -30,6 +30,7 @@ CLIENT_ID = json.loads(open('client_secrets.json','r').read())['web']['client_id
 @app.route('/')
 def index():
     '''Initialize a session for the current user, and render welcome.html.'''
+    '''Show log-in botton if user hasn't logged in.'''
     # Create a state token.
     state = ''.join(random.choice(string.ascii_uppercase + string.digits)
                     for x in xrange(32))
@@ -63,6 +64,8 @@ def callback_handler():
     http = httplib2.Http()
     http = credentials.authorize(http)
 
+    # associate the current session with this google account
+    session['google_username'] = credentials.id_token['email'].split('@')[0] 
     return render_template("welcome.html")
 
 

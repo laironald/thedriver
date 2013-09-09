@@ -143,14 +143,40 @@ class GhostDBConnector():
         return 0
 
     def doc_exists(self, arg_googledoc_id):
+        """ This checks if a google doc has ever been imported.
+        Args:
+            arg_googledoc_id: id of a google doc
+
+        Returns:
+            returns 0 if doc doesn't exists in ghostdocs' d/b.
+            returns 1 if positive.
+        """
         flag = self.session().query(exists().where(Document.googledoc_id == arg_googledoc_id)).scalar()
         return flag
 
     def find_doc(self, arg_googledoc_id):
+        """ This finds documents with the given id.
+
+        Args:
+            arg_googledoc_id: id of a google doc.
+
+        Returns:
+            a list of Document instances.
+
+        """
         docs = self.session().query(Document).filter(Document.googledoc_id == arg_googledoc_id)
         return docs
 
     def list_ghost_docs(self, user_id):
+        ''' list a user's ghostdocs files
+
+        Args:
+            user_id: user's ghostdocs id.
+
+        Return:
+            a list of Document instances.
+
+        '''
         docs = self.session().query(Document).filter(Document.user_id == user_id).all()
         return docs
 
@@ -164,6 +190,7 @@ class GhostDBConnector():
 
 
 def sample_run():
+    ''' not in user anymore.  ignore this. '''
     connector = GhostDBConnector()
     connector.CreateDB()
     user = User(**config.get("drive"))
