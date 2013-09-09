@@ -20,8 +20,9 @@ function adjustIframes()
     }
   });
 }
-$(window).on('resize load', adjustIframes);
 
+// from google
+$(window).on('resize load', adjustIframes);
     // A simple callback implementation.
     function pickerCallback(data) {
       if (data[google.picker.Response.ACTION] == google.picker.Action.PICKED) {
