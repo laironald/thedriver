@@ -154,16 +154,29 @@ def load_doc(username=None, dochandle=None, googledoc_id=None):
         return db_connector.find_doc(googledoc_id)
 
 
-def create_user(user_name, google_account, oauth_code):
+def create_user(user_name, google_account, user_handle, cred):
     """
     register a new GhostDocs user
     """
     user = ghost_db.User(name=user_name,
                          google_account=google_account,
-                         oauth_code=oauth_code)
+                         handle=user_handle,
+                         oauth_code=cred)
     db_connector.session().add(user)
     db_connector.session().commit()
+    print '[data_interface/create_user()]: new ghostdocs user created! user_handle = ' + user_handle
 
+def find_user(google_username):
+    """ Find a GhostDocs users by google account.
+
+    Args:
+        google_username: google account.  e.g. thedriverjones
+
+    Returns:
+        A User instance.
+    """
+    user = db_connector.find_user(google_username)
+    return user
 
 def preview_doc(user_id=None, filedict=None):
     """
