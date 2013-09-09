@@ -167,6 +167,21 @@ class GhostDBConnector():
         docs = self.session().query(Document).filter(Document.googledoc_id == arg_googledoc_id)
         return docs
 
+    def find_user(self, arg_google_account):
+        """ Find a GhostDocs user by google account.
+
+        Args:
+            arg_google_account: google account.  e.g.  thedriverjones
+
+        Returns:
+            A User instance.
+        """
+        user = self.session().query(User).filter(User.google_account == arg_google_account)
+        if user.count(): 
+            return user.first()
+        else:
+            return None
+
     def list_ghost_docs(self, user_id):
         ''' list a user's ghostdocs files
 
