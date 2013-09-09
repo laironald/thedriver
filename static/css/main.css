@@ -1,4 +1,11 @@
+/*
+  Angular CSS
+*/
 
+input.ng-invalid.ng-dirty {
+    border-color: #FA787E;
+    color: #FA787E;
+}
 
 /* ==========================================================================
    Author's custom styles
