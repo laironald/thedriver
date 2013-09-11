@@ -2,13 +2,16 @@
 #consider Flask-Assets, but sometime later
 #https://github.com/Pitmairen/hamlish-jinja
 
-import data_interface as di
 import hamlish_jinja
 import json
 import random
 import string
 import httplib2
 import pickle
+import os
+
+path=os.path.dirname(os.path.realpath(__file__))
+os.chdir(path) # change working directory to folder of this app.py
 
 from flask import Flask, render_template
 from flask import request, session
@@ -16,6 +19,8 @@ from flask import make_response
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.client import FlowExchangeError
 from oauth2client.client import OAuth2WebServerFlow
+
+import data_interface as di
 
 app = Flask(__name__, static_folder='static', static_url_path='')
 app.debug = di.config.get("global").get("app_debug")
@@ -64,9 +69,11 @@ def callback_handler():
         return response
 
     google_username = credentials.id_token['email'].split('@')[0] # google account of the current user
+    print "[*debug*] google user: " + google_username + "@gmail.com has logged in!"
     user = di.find_user(google_username)
     if user: # if user has registered in GhostDocs
         user_handle = user.handle
+        print "[*debug*] this google user has already registered as " + user_handle
     else: # if user hasn't registered, create a GhostDocs account. TODO let user choose their username, etc instead of user google username directly.
         user_handle = google_username
         di.create_user(google_username,
