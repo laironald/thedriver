@@ -47,7 +47,7 @@ def index():
 
 
 # --- login callback ---
-@app.route('/connect', methods=['POST'])
+@app.route('/auth', methods=['POST'])
 def callback_handler():
     # Ensure that the request is not a forgery and that the user sending
     # this connect request is the expected user.
@@ -69,11 +69,11 @@ def callback_handler():
         return response
 
     google_username = credentials.id_token['email'].split('@')[0] # google account of the current user
-    print "[*debug*] google user: " + google_username + "@gmail.com has logged in!"
+    print "[debug] google user: " + google_username + "@gmail.com has logged in!"
     user = di.find_user(google_username)
     if user: # if user has registered in GhostDocs
         user_handle = user.handle
-        print "[*debug*] this google user has already registered as " + user_handle
+        print "[debug] this google user has already registered as " + user_handle
     else: # if user hasn't registered, create a GhostDocs account. TODO let user choose their username, etc instead of user google username directly.
         user_handle = google_username
         di.create_user(google_username,
