@@ -21,7 +21,6 @@ class UserSession:
 
 user_session = UserSession()
 
-
 # --------------------------------
 
 def fetch_doc_by_id(username, doc_id):
