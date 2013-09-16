@@ -167,7 +167,7 @@ class GhostDBConnector():
         docs = self.session().query(Document).filter(Document.googledoc_id == arg_googledoc_id)
         return docs
 
-    def find_user(self, arg_google_account):
+    def find_google_user(self, arg_google_account):
         """ Find a GhostDocs user by google account.
 
         Args:
@@ -177,6 +177,21 @@ class GhostDBConnector():
             A User instance.
         """
         user = self.session().query(User).filter(User.google_account == arg_google_account)
+        if user.count(): 
+            return user.first()
+        else:
+            return None
+
+    def find_ghostdocs_user(self, arg_userhandle):
+        """ Find a GhostDocs user by handle.
+
+        Args:
+            arg_userhandle: google account.  e.g.  thedriverjones
+
+        Returns:
+            A User instance.
+        """
+        user = self.session().query(User).filter(User.handle == arg_userhandle)
         if user.count(): 
             return user.first()
         else:
@@ -192,7 +207,7 @@ class GhostDBConnector():
             a list of Document instances.
 
         '''
-        docs = self.session().query(Document).filter(Document.user_id == user_id).all()
+        docs = self.session().query(Document).filter(User.handle == user_id).all()
         return docs
 
     def find_doc_by_user(self, username, dochandle):

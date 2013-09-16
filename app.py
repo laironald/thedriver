@@ -15,7 +15,7 @@ os.chdir(path) # change working directory to folder of this app.py
 
 from flask import Flask, render_template
 from flask import request, session
-from flask import make_response
+from flask import make_response, redirect, url_for
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.client import FlowExchangeError
 from oauth2client.client import OAuth2WebServerFlow
@@ -47,7 +47,7 @@ def index():
 
 
 # --- login callback ---
-@app.route('/auth', methods=['POST'])
+@app.route('/auth', methods=['POST','GET'])
 def callback_handler():
     # Ensure that the request is not a forgery and that the user sending
     # this connect request is the expected user.
@@ -55,9 +55,11 @@ def callback_handler():
         response = make_response(json.dumps('Invalid state parameter.'), 401)
         response.headers['Content-Type'] = 'applicatoin/json'
         return response
-    
+
+    oauth_code = request.args.get('code', '')
+
     try:
-        oauth_code = request.data
+        #oauth_code = request.data
         flow = flow_from_clientsecrets('client_secrets.json', scope='')
         flow.redirect_uri = 'postmessage'
         credentials = flow.step2_exchange(oauth_code)
@@ -70,7 +72,7 @@ def callback_handler():
 
     google_username = credentials.id_token['email'].split('@')[0] # google account of the current user
     print "[debug] google user: " + google_username + "@gmail.com has logged in!"
-    user = di.find_user(google_username)
+    user = di.find_google_user(google_username)
     if user: # if user has registered in GhostDocs
         user_handle = user.handle
         print "[debug] this google user has already registered as " + user_handle
@@ -88,9 +90,7 @@ def callback_handler():
     # associate the current session with this user
     session['user'] = user_handle
 
-    return render_template("welcome.html")
-
-
+    return redirect('/in/'+user_handle)
 
 # --- API Calls for actions ---
 @app.route('/action/open_doc/<doc_id>')
@@ -116,11 +116,36 @@ def set_settings(doc_id):
     return json.dumps({})
 
 
-# --- EDIT DOC / PREVIEW DOC ---
+# --- USER PAGE ---
 
+@app.route('/in/<username>')
+def render_userpage(username):
+    ''' userpage is the page shown to a user after logging in.
+        for now, load the newest ghost doc.
+    '''
+    user = di.find_ghostdocs_user(username)
+    if not user:
+        return render_template("404.html")
+
+    docs = di.list_ghost_docs(username)
+    if len(docs) == 0:
+        # import the first google doc
+        doc = di.list_google_docs(username)[0]
+        print 'importing the first google doc into ghostdocs......'
+        print doc
+        di.add_doc(user, doc)
+        docs = di.list_ghost_docs(username)
+
+    doc = docs[0]
+    dochandle = doc.handle
+    return redirect('/in/'+username+'/'+dochandle)
+    #return render_base(username, doc['handle'])
+
+# --- EDIT DOC / PREVIEW DOC ---
 
 @app.route('/in/<username>/<dochandle>')
 def render_base(username, dochandle):
+
     # check if the current user has access to this doc
     if not 'user' in session or session['user'] != username:
         return render_template("no_access.html")

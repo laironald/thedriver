@@ -84,6 +84,7 @@ def add_doc(user, new_doc):
         "htmlLink": new_doc["exportLinks"]["text/html"]
     })
     user.document.append(doc)
+    print 'appending doc ' + doc.name
     db_connector.commit()
     return True
 
@@ -165,7 +166,7 @@ def create_user(user_name, google_account, user_handle, cred):
     db_connector.session().commit()
     print '[data_interface/create_user()]: new ghostdocs user created! user_handle = ' + user_handle
 
-def find_user(google_username):
+def find_google_user(google_username):
     """ Find a GhostDocs users by google account.
 
     Args:
@@ -174,8 +175,18 @@ def find_user(google_username):
     Returns:
         A User instance.
     """
-    user = db_connector.find_user(google_username)
+    user = db_connector.find_google_user(google_username)
     return user
+
+def find_ghostdocs_user(userhandle):
+    """ Find a GhostDocs users by user handle.
+
+    Returns:
+        A User instance.
+    """
+    user = db_connector.find_ghostdocs_user(userhandle)
+    return user
+
 
 def preview_doc(user_id=None, filedict=None):
     """
