@@ -123,6 +123,7 @@ def render_userpage(username):
     ''' userpage is the page shown to a user after logging in.
         for now, load the newest ghost doc.
     '''
+    print '** to find ghostdocs user ' + username + '***'
     user = di.find_ghostdocs_user(username)
     if not user:
         return render_template("404.html")
@@ -131,10 +132,14 @@ def render_userpage(username):
     if len(docs) == 0:
         # import the first google doc
         doc = di.list_google_docs(username)[0]
-        print 'importing the first google doc into ghostdocs......'
+        print '...........importing the first google doc into ghostdocs......'
         print doc
         di.add_doc(user, doc)
         docs = di.list_ghost_docs(username)
+    else:
+        print '...............no need to import...............'
+        print len(docs)
+        print [x.name for x in docs]
 
     doc = docs[0]
     dochandle = doc.handle

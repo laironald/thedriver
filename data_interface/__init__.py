@@ -1,6 +1,7 @@
 import ghost_db
 import thedriver
 import thedriver.download as drived
+import pickle
 from datetime import datetime
 
 
@@ -11,15 +12,23 @@ gdoc_mimeType = config.get("global").get("gdoc_mimetype")
 
 class UserSession:
     drive = None
-    user_id = None  # ghost doc id
-    name = None  # ghost doc username
+    user_id = None  # ghost doc id (abandon this and use username as id?)
+    username = None  # ghost doc username
 
-    def __init__(self, user_name=None):
-        self.name = user_name
-        self.drive = thedriver.go()
-        self.drive.build()
+    def __init__(self, userhandle=None):
+        if not userhandle:
+            userhandle = 'ghostie'
+        self.username = userhandle
+        cred = db_connector.get_credentials(userhandle)
+        cred = pickle.loads(cred)
+        self.drive = thedriver.go(cred)
 
-user_session = UserSession()
+active_users = {} # a dictionary of current active users
+
+def user_session(userhandle):
+    if not userhandle in active_users:
+        active_users[userhandle] = UserSession(userhandle)
+    return active_users[userhandle] 
 
 # --------------------------------
 
@@ -34,8 +43,8 @@ def fetch_doc_by_id(username, doc_id):
             return doc
 
 
-def fetch_user_doc(session):
-    user = db_connector.session().query(ghost_db.User).filter(ghost_db.User.handle == session["user"]).first()
+def fetch_user_doc(browser_session):
+    user = db_connector.session().query(ghost_db.User).filter(ghost_db.User.handle == browser_session["user"]).first()
     for doc in user.document:
         if doc.handle == session["doc"]:
             break
@@ -105,11 +114,11 @@ def update_doc_meta(doc, meta):
     doc.name = meta["title"]
 
 
-def list_google_docs(user_id=None, if_hide_ghost_doc=True):
+def list_google_docs(userhandle, if_hide_ghost_doc=True):
     """list a user's all editable google docs
 
     Args:
-        user_id: user's GhostDocs id
+        userhandle: user's GhostDocs handle
         if_hide_ghost_doc: if remove docs already exist in ghost docs from the list
 
     Returns:
@@ -120,11 +129,13 @@ def list_google_docs(user_id=None, if_hide_ghost_doc=True):
           {...}
         ]
     """
-    files = user_session.drive.files()
+    print '*******listing google docs for ' + userhandle + '**************'
+    files = user_session(userhandle).drive.files()
     google_docs = filter(lambda f: f['mimeType'] == gdoc_mimeType
                          and (not 'explicitlyTrashed' in f
                          or not f['explicitlyTrashed'])
                          and f['editable'], files)
+    print [x['title'] for x in google_docs] 
     return google_docs
 
 
@@ -161,7 +172,7 @@ def create_user(user_name, google_account, user_handle, cred):
     user = ghost_db.User(name=user_name,
                          google_account=google_account,
                          handle=user_handle,
-                         oauth_code=cred)
+                         credentials=cred)
     db_connector.session().add(user)
     db_connector.session().commit()
     print '[data_interface/create_user()]: new ghostdocs user created! user_handle = ' + user_handle
@@ -185,10 +196,11 @@ def find_ghostdocs_user(userhandle):
         A User instance.
     """
     user = db_connector.find_ghostdocs_user(userhandle)
+    print '*****found ghostdocs user ,  user = ' + user.name + '**********'
     return user
 
 
-def preview_doc(user_id=None, filedict=None):
+def preview_doc(userhandle=None, filedict=None):
     """
     process a google doc and show the compiled HTML.
     Warning:  the default arg values user_id=None and google_doc_id=None are both for ease of testing.
@@ -210,7 +222,7 @@ def preview_doc(user_id=None, filedict=None):
     if not filedict:
         filedict = list_google_docs()[0]
 
-    doc_in_html = drived.download(user_session.drive, filedict)
+    doc_in_html = drived.download(user_session(userhandle).drive, filedict)
     out = drived.format(doc_in_html)
     out.remove_comments()
     return out.html

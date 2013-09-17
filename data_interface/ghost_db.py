@@ -92,13 +92,18 @@ class GhostDBConnector():
         '''
         Base.metadata.create_all(self.engine, checkfirst=True)
 
-    def add_user(self, arg_name, arg_google_account, arg_oauth_code):
+    def get_credentials(self, userhandle):
+        user = self.session().query(User).filter(User.handle == userhandle).first()
+        return user.credentials
+
+
+    def add_user(self, arg_name, arg_google_account, arg_credentials):
         ''' Add a new user to GhostDocs
 
         '''
         user = User(name=arg_name,
                     google_account=arg_google_account,
-                    oauth_code=arg_oauth_code)
+                    credentials=arg_credentials)
         self.session.add(user)
         self.session.commit()
 
@@ -207,8 +212,8 @@ class GhostDBConnector():
             a list of Document instances.
 
         '''
-        docs = self.session().query(Document).filter(User.handle == user_id).all()
-        return docs
+        user = self.session().query(User).filter(User.handle == user_id).first()
+        return user.document
 
     def find_doc_by_user(self, username, dochandle):
         # TODO: might want to use join logic. maybe.
