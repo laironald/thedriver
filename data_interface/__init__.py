@@ -200,13 +200,12 @@ def find_ghostdocs_user(userhandle):
     return user
 
 
-def preview_doc(userhandle=None, filedict=None):
+def preview_doc(userhandle, filedict):
     """
     process a google doc and show the compiled HTML.
-    Warning:  the default arg values user_id=None and google_doc_id=None are both for ease of testing.
 
     Args:
-        user_id: GhostDoc user_id.
+        userhandle: GhostDoc userhandle.
         file: metadata of a google doc.
 
     Returns:
@@ -219,8 +218,8 @@ def preview_doc(userhandle=None, filedict=None):
     else:  # TODO remove this else branch. (this else branch is only for testing)
         file = user_session.drive.files(title="test")[0];
     """
-    if not filedict:
-        filedict = list_google_docs()[0]
+    #if not filedict:
+    #    filedict = list_google_docs()[0]
 
     doc_in_html = drived.download(user_session(userhandle).drive, filedict)
     out = drived.format(doc_in_html)
@@ -228,14 +227,12 @@ def preview_doc(userhandle=None, filedict=None):
     return out.html
 
 
-def publish_doc(user_id=None, filedict=None):
+def publish_doc(userhandle, filedict):
     """
     Process a google doc and publish it.
 
-    Warning:  the default arg values user_id=None and google_doc_id=None are both for ease of testing.
-
     Args:
-        user_id: GhostDoc user_id.
+        userhandle: GhostDoc userhandle.
         filedict: metadata of a google doc.
 
     Returns:
@@ -250,23 +247,21 @@ def publish_doc(user_id=None, filedict=None):
 
         # probably need to revisit this in some capacity
         if not db_connector.doc_exist(filedict):
-            db_connector.add_doc(filedict, user_id)
+            db_connector.add_doc(filedict, userhandle)
         doc_id = filedict["id"]
-        html_compiled = preview_doc(user_id, filedict)
+        html_compiled = preview_doc(userhandle, filedict)
     else:
         doc = load_doc(googledoc_id=filedict).first()
         doc_id = filedict
-        html_compiled = preview_doc(user_id, doc.htmlLink)
+        html_compiled = preview_doc(userhandle, doc.htmlLink)
 
     db_connector.update_doc(doc_id, html_compiled)
     return html_compiled
 
 
-def view_doc(user_id=None, arg_google_doc_id=None):
+def view_doc(arg_google_doc_id):
     """
     Load the content of a compiled doc.
-
-    Warning:  the default arg values user_id=None and google_doc_id=None are both for ease of testing.
 
     Args:
         user_id: GhostDoc user_id.
@@ -275,8 +270,8 @@ def view_doc(user_id=None, arg_google_doc_id=None):
     Returns:
         HTML as a string. ( need to return more, such as navigation. )
     """
-    if not arg_google_doc_id:
-        arg_google_doc_id = list_google_docs()[0]['id']
+    #if not arg_google_doc_id:
+    #    arg_google_doc_id = list_google_docs()[0]['id']
 
     doc = db_connector.find_doc(arg_google_doc_id)[0]
     html = doc.html

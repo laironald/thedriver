@@ -59,7 +59,6 @@ def callback_handler():
     oauth_code = request.args.get('code', '')
 
     try:
-        #oauth_code = request.data
         flow = flow_from_clientsecrets('client_secrets.json', scope='')
         flow.redirect_uri = 'postmessage'
         credentials = flow.step2_exchange(oauth_code)
@@ -75,6 +74,7 @@ def callback_handler():
     user = di.find_google_user(google_username)
     if user: # if user has registered in GhostDocs
         user_handle = user.handle
+        user.credentials = cred # update credentials
         print "[debug] this google user has already registered as " + user_handle
     else: # if user hasn't registered, create a GhostDocs account. TODO let user choose their username, etc instead of user google username directly.
         user_handle = google_username
@@ -191,12 +191,12 @@ def render_preview(doc_id):
     # should be preview doc, but whatever
     # change this later
     doc = di.load_doc(googledoc_id=doc_id).first()
-    return di.preview_doc(filedict=doc.htmlLink)
+    return di.preview_doc(userhandle=session['user'], filedict=doc.htmlLink)
 
 
 @app.route('/publish/<doc_id>')
 def publish_doc(doc_id):
-    di.publish_doc(filedict=doc_id)
+    di.publish_doc(userhandle=session['user'], filedict=doc_id)
     status = {}
     status["status"] = "success"
     return json.dumps(status)
