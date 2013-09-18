@@ -22,6 +22,42 @@
         {% endif %}
     </head>
     <body>
+
+        <!-- signin button -->
+	<span id="signinButton">
+	  <span
+	    class="g-signin"
+            data-scope="email https://www.googleapis.com/auth/drive"
+            data-clientId="{{ CLIENT_ID }}"
+            data-accesstype="offline"
+            data-callback="onSignInCallback"
+            data-theme="dark"
+            data-cookiepolicy="single_host_origin">
+	  </span>
+	</span>
+
+	<script>
+	function onSignInCallback(authResult){
+	
+	if (authResult['access_token']) {
+      // The user is signed in
+      this.authResult = authResult;
+      document.getElementById('signinButton').setAttribute('style', 'display: none');
+      $.ajax({
+        type: 'POST',
+        url: '/auth?state={{ STATE }}',
+        contentType: 'application/octet-stream; charset=utf-8',
+        data: this.authResult.code
+      });
+
+    } else if (authResult['error']) {
+      // There was an error, which means the user is not signed in.    
+      console.log('There was an error: ' + authResult['error']);
+    }
+
+    }
+	</script>
+
         <!--[if lt IE 7]>
             <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
         <![endif]-->
@@ -87,6 +123,17 @@
         <script src="/js/main.js"></script>
         <script>
           analytics.track('Loaded welcome page');
+        </script>
+
+        <!-- google+ script --> 
+        <script type="text/javascript">
+        (function() {
+          var po = document.createElement('script'); 
+          po.type = 'text/javascript'; po.async = true;
+          po.src = 'https://apis.google.com/js/client:plusone.js';
+          var s = document.getElementsByTagName('script')[0];
+          s.parentNode.insertBefore(po, s);
+        })();
         </script>
 
     </body>
