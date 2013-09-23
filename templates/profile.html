@@ -1,189 +1,36 @@
-<!DOCTYPE html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
-<html ng-app="myApp">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title>&lt;("&lt;) | {{ user.name }}</title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% extends "layout/base.html" %}
 
-        <link rel="stylesheet" href="/css/bootstrap.min.css">
-        <link rel="stylesheet" href="/css/main.css">
+{% block page_title %}
+  &lt;("&lt;) | {{ user.name }}
+{% endblock %}
 
-        <script src="http://www.google.com/jsapi"></script>
-        <script src="/js/vendor/modernizr-2.6.2-respond-1.1.0.min.js"></script>
-        {% if request.headers['Host'] != "localhost:5000" %}
-            <script type="text/javascript">
-              var analytics=analytics||[];(function(){var e=["identify","track","trackLink","trackForm","trackClick","trackSubmit","page","pageview","ab","alias","ready","group"],t=function(e){return function(){analytics.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var n=0;n<e.length;n++)analytics[e[n]]=t(e[n])})(),analytics.load=function(e){var t=document.createElement("script");t.type="text/javascript",t.async=!0,t.src=("https:"===document.location.protocol?"https://":"http://")+"d2dq2ahtl5zl1z.cloudfront.net/analytics.js/v1/"+e+"/analytics.min.js";var n=document.getElementsByTagName("script")[0];n.parentNode.insertBefore(t,n)};
-              analytics.load("02svud2b5d");
-            </script>
-        {% endif %}
-    </head>
-    <body>
+{% block menubar %}
+  <div class="col-md-8" id="menubar" ng-controller="MenuClickCtrl">
+    <div class="btn-group">
+      <button type="button" class="btn btn-primary">New</button>
+      <div class="btn-group">
+        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+          Open
+          <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu">
+          {% for d in recent_docs %}
+            <li><a href="/in/{{ user.handle }}/{{ d.handle }}">{{ d.name }}</a></li>
+          {% endfor %}
+          <li class="divider"></li>
+          <li><a href="#" ng-click="new_open()">Convert from Google</a></li>
+         </ul>
+      </div>
+    </div>
+  </div>
+{% endblock %}
 
-        <!--[if lt IE 7]>
-            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
-        <![endif]-->
-
-
-        <!-- Modal -->
-
-        <div class="modal fade" id="previewModal" ng-controller="PreviewModalCtrl">
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <ul class="nav nav-pills">
-                  <li ng-class="{active: (data.action == 0)}"><a href="#" ng-click="preview()">Preview</a></li>
-                  <li ng-class="{active: (data.action == 1)}"><a href="#" ng-click="publish()">Published</a></li>
-                </ul>
-              </div>
-              <div class="modal-body">
-                {% raw %}
-                <iframe ng-src="{{data.url}}" width="800px"></iframe>
-                {% endraw %}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Setting -->
-
-        <div class="modal fade" id="settingModal" ng-controller="SettingModalCtrl">
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                Settings
-              </div>
-              <form class="form-horizontal" role="form" name="settingForm">
-                <div class="modal-body">
-                  <div class="form-group">
-                    <label class="col-lg-2 control-label">Title</label>
-                    <div class="col-lg-6">
-                      <input type="text" class="form-control" ng-model="data.settings.title">
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <label class="col-lg-2 control-label">Handle</label>
-                    <div class="col-lg-6">
-                      <input type="text" name="handle" class="form-control" ng-model="data.settings.handle" ng-pattern="word">
-                    </div>
-                    <div class="col-lg-4 control-label" style="text-align: left;" ng-show="settingForm.handle.$error.pattern">Must be single word</div>
-                  </div>
-                </div>
-                <div class="modal-footer">
-                  <a href="#" class="btn btn-default" data-dismiss="modal" ng-click="save()" ng-disabled="settingForm.handle.$error.pattern">Save</a>
-                  <a href="#" class="btn btn-primary" data-dismiss="modal">Close</a>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-
-        <!-- End Modal -->
-
-
-
-        <nav class="navbar navbar-default">
-          <!-- Brand and toggle get grouped for better mobile display -->
-          <div class="container">
-          <div class="navbar-header">
-            <a href="/" class="navbar-brand" href="#">GhostDocs (&gt;")&gt;</a>
-          </div>
-
-          <!-- Collect the nav links, forms, and other content for toggling -->
-          <div class="collapse navbar-collapse navbar-ex1-collapse">
-            <ul class="nav navbar-nav navbar-right">
-              <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                  {% if user.name %}
-                    {{ user.name }}
-                  {% else %}
-                    ghostie
-                  {% endif %} 
-                 <b class="caret"></b>
-                </a>
-                <ul class="dropdown-menu">
-                  <li><a href="#">Action</a></li>
-                  <li><a href="#">Another action</a></li>
-                  <li><a href="#">Something else here</a></li>
-                  <li><a href="#">Separated link</a></li>
-                </ul>
-              </li>
-            </ul>
-          </div><!-- /.navbar-collapse -->
-          </div>
-        </nav>
-        <div class="container">
-          <div class="row-fluid">
-            <div class="row-fluid menubar">
-              <br />
-
-              <!-- menu bar -->
-
-              <div class="col-md-8" id="menubar" ng-controller="MenuClickCtrl">
-                <div class="btn-group">
-                  <button type="button" class="btn btn-primary">New</button>
-                  <div class="btn-group">
-                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-                      Open
-                      <span class="caret"></span>
-                    </button>
-                    <ul class="dropdown-menu">
-                      {% for d in recent_docs %}
-                        <li><a href="/in/{{ user.handle }}/{{ d.handle }}">{{ d.name }}</a></li>
-                      {% endfor %}
-                      <li class="divider"></li>
-                      <li><a href="#" ng-click="new_open()">Convert from Google</a></li>
-                     </ul>
-                  </div>
-                </div>
-              </div>
-
-
-              <div class="col-md-4 text-center">
-                <div class="hide alert alert-success" id="status_message">Awesome. Successfully Published</div>
-              </div>
-            </div>
-
-          </div>
-        </div> <!-- /container -->
-
-        <footer class="bs-footer">
-          <div class="container">
-            <div class="row-fluid">
-              <div class="col-md-12">
-                <p>a Liwen + Ron production, 2013</p>
-              </div>
-            </div>
-          </div>          
-        </footer>
-
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
-        <script>window.jQuery || document.write('<script src="/js/vendor/jquery-1.10.1.min.js"><\/script>')</script>
-
-        {% if request.headers['Host'] != "localhost:5000" %}
-            <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
-        {% else %}
-          <script src="/js/vendor/angular.js"></script>
-        {% endif %}
-        <script src="/js/indexController.js"></script>
-
-        <script src="/js/vendor/bootstrap.min.js"></script>
-        <script src="/js/vendor/underscore-min.js"></script>
-        <script src="/js/main.js"></script>
-        <script>
-          google.load('picker', '1');
-          {% if user.handle != "ghostie" %}
-              analytics.identify('{{ user.handle }}', {
-                name: '{{ user.name }}',
-              });
-          {% endif %}
-        </script>
-    </body>
-</html>
+{% block specific_javascript %}
+  <script>
+  {% if user.handle != "ghostie" %}
+      analytics.identify('{{ user.handle }}', {
+        name: '{{ user.name }}',
+      });
+  {% endif %}
+  </script>
+{% endblock %}
