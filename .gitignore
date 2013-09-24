@@ -3,7 +3,5 @@
 .webassets*
 .DS_Store
 *~
-
-*.db
-
+*journal
 *.db
