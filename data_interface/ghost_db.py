@@ -92,18 +92,13 @@ class GhostDBConnector():
         '''
         Base.metadata.create_all(self.engine, checkfirst=True)
 
-    def get_credentials(self, userhandle):
-        user = self.session().query(User).filter(User.handle == userhandle).first()
-        return user.credentials
-
-
-    def add_user(self, arg_name, arg_google_account, arg_credentials):
+    def add_user(self, arg_name, arg_google_account, arg_oauth_code):
         ''' Add a new user to GhostDocs
 
         '''
         user = User(name=arg_name,
                     google_account=arg_google_account,
-                    credentials=arg_credentials)
+                    oauth_code=arg_oauth_code)
         self.session.add(user)
         self.session.commit()
 
@@ -148,84 +143,16 @@ class GhostDBConnector():
         return 0
 
     def doc_exists(self, arg_googledoc_id):
-        """ This checks if a google doc has ever been imported.
-        Args:
-            arg_googledoc_id: id of a google doc
-
-        Returns:
-            returns 0 if doc doesn't exists in ghostdocs' d/b.
-            returns 1 if positive.
-        """
         flag = self.session().query(exists().where(Document.googledoc_id == arg_googledoc_id)).scalar()
         return flag
 
     def find_doc(self, arg_googledoc_id):
-        """ This finds documents with the given id.
-
-        Args:
-            arg_googledoc_id: id of a google doc.
-
-        Returns:
-            a list of Document instances.
-
-        """
         docs = self.session().query(Document).filter(Document.googledoc_id == arg_googledoc_id)
         return docs
 
-<<<<<<< HEAD
-    def find_user(self, arg_google_account):
-=======
-    def find_google_user(self, arg_google_account):
->>>>>>> rl-130922-template
-        """ Find a GhostDocs user by google account.
-
-        Args:
-            arg_google_account: google account.  e.g.  thedriverjones
-
-        Returns:
-            A User instance.
-        """
-        user = self.session().query(User).filter(User.google_account == arg_google_account)
-        if user.count(): 
-            return user.first()
-        else:
-            return None
-
-<<<<<<< HEAD
-=======
-    def find_ghostdocs_user(self, arg_userhandle):
-        """ Find a GhostDocs user by handle.
-
-        Args:
-            arg_userhandle: google account.  e.g.  thedriverjones
-
-        Returns:
-            A User instance.
-        """
-        user = self.session().query(User).filter(User.handle == arg_userhandle)
-        if user.count(): 
-            return user.first()
-        else:
-            return None
-
->>>>>>> rl-130922-template
     def list_ghost_docs(self, user_id):
-        ''' list a user's ghostdocs files
-
-        Args:
-            user_id: user's ghostdocs id.
-
-        Return:
-            a list of Document instances.
-
-        '''
-<<<<<<< HEAD
         docs = self.session().query(Document).filter(Document.user_id == user_id).all()
         return docs
-=======
-        user = self.session().query(User).filter(User.handle == user_id).first()
-        return user.document
->>>>>>> rl-130922-template
 
     def find_doc_by_user(self, username, dochandle):
         # TODO: might want to use join logic. maybe.
@@ -237,7 +164,6 @@ class GhostDBConnector():
 
 
 def sample_run():
-    ''' not in user anymore.  ignore this. '''
     connector = GhostDBConnector()
     connector.CreateDB()
     user = User(**config.get("drive"))

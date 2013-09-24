@@ -1,7 +1,6 @@
 import ghost_db
 import thedriver
 import thedriver.download as drived
-import pickle
 from datetime import datetime
 
 
@@ -12,27 +11,17 @@ gdoc_mimeType = config.get("global").get("gdoc_mimetype")
 
 class UserSession:
     drive = None
-    user_id = None  # ghost doc id (abandon this and use username as id?)
-    username = None  # ghost doc username
+    user_id = None  # ghost doc id
+    name = None  # ghost doc username
 
-    def __init__(self, userhandle=None):
-        if not userhandle:
-            userhandle = 'ghostie'
-        self.username = userhandle
-        cred = db_connector.get_credentials(userhandle)
-        cred = pickle.loads(cred)
-        self.drive = thedriver.go(cred)
+    def __init__(self, user_name=None):
+        self.name = user_name
+        self.drive = thedriver.go()
+        self.drive.build()
 
-active_users = {} # a dictionary of current active users
+user_session = UserSession()
 
-<<<<<<< HEAD
-=======
-def user_session(userhandle):
-    if not userhandle in active_users:
-        active_users[userhandle] = UserSession(userhandle)
-    return active_users[userhandle] 
 
->>>>>>> rl-130922-template
 # --------------------------------
 
 def fetch_doc_by_id(username, doc_id):
@@ -46,8 +35,8 @@ def fetch_doc_by_id(username, doc_id):
             return doc
 
 
-def fetch_user_doc(browser_session):
-    user = db_connector.session().query(ghost_db.User).filter(ghost_db.User.handle == browser_session["user"]).first()
+def fetch_user_doc(session):
+    user = db_connector.session().query(ghost_db.User).filter(ghost_db.User.handle == session["user"]).first()
     for doc in user.document:
         if doc.handle == session["doc"]:
             break
@@ -96,7 +85,6 @@ def add_doc(user, new_doc):
         "htmlLink": new_doc["exportLinks"]["text/html"]
     })
     user.document.append(doc)
-    print 'appending doc ' + doc.name
     db_connector.commit()
     return True
 
@@ -117,11 +105,11 @@ def update_doc_meta(doc, meta):
     doc.name = meta["title"]
 
 
-def list_google_docs(userhandle, if_hide_ghost_doc=True):
+def list_google_docs(user_id=None, if_hide_ghost_doc=True):
     """list a user's all editable google docs
 
     Args:
-        userhandle: user's GhostDocs handle
+        user_id: user's GhostDocs id
         if_hide_ghost_doc: if remove docs already exist in ghost docs from the list
 
     Returns:
@@ -132,13 +120,11 @@ def list_google_docs(userhandle, if_hide_ghost_doc=True):
           {...}
         ]
     """
-    print '*******listing google docs for ' + userhandle + '**************'
-    files = user_session(userhandle).drive.files()
+    files = user_session.drive.files()
     google_docs = filter(lambda f: f['mimeType'] == gdoc_mimeType
                          and (not 'explicitlyTrashed' in f
                          or not f['explicitlyTrashed'])
                          and f['editable'], files)
-    print [x['title'] for x in google_docs] 
     return google_docs
 
 
@@ -168,59 +154,24 @@ def load_doc(username=None, dochandle=None, googledoc_id=None):
         return db_connector.find_doc(googledoc_id)
 
 
-def create_user(user_name, google_account, user_handle, cred):
+def add_user(user_name, google_account, oauth_code):
     """
     register a new GhostDocs user
     """
     user = ghost_db.User(name=user_name,
                          google_account=google_account,
-                         handle=user_handle,
-<<<<<<< HEAD
-                         oauth_code=cred)
-=======
-                         credentials=cred)
->>>>>>> rl-130922-template
+                         oauth_code=oauth_code)
     db_connector.session().add(user)
     db_connector.session().commit()
-    print '[data_interface/create_user()]: new ghostdocs user created! user_handle = ' + user_handle
-
-<<<<<<< HEAD
-def find_user(google_username):
-=======
-def find_google_user(google_username):
->>>>>>> rl-130922-template
-    """ Find a GhostDocs users by google account.
-
-    Args:
-        google_username: google account.  e.g. thedriverjones
-
-    Returns:
-        A User instance.
-    """
-<<<<<<< HEAD
-    user = db_connector.find_user(google_username)
-=======
-    user = db_connector.find_google_user(google_username)
->>>>>>> rl-130922-template
-    return user
-
-def find_ghostdocs_user(userhandle):
-    """ Find a GhostDocs users by user handle.
-
-    Returns:
-        A User instance.
-    """
-    user = db_connector.find_ghostdocs_user(userhandle)
-    print '*****found ghostdocs user ,  user = ' + user.name + '**********'
-    return user
 
 
-def preview_doc(userhandle, filedict):
+def preview_doc(user_id=None, filedict=None):
     """
     process a google doc and show the compiled HTML.
+    Warning:  the default arg values user_id=None and google_doc_id=None are both for ease of testing.
 
     Args:
-        userhandle: GhostDoc userhandle.
+        user_id: GhostDoc user_id.
         file: metadata of a google doc.
 
     Returns:
@@ -233,21 +184,23 @@ def preview_doc(userhandle, filedict):
     else:  # TODO remove this else branch. (this else branch is only for testing)
         file = user_session.drive.files(title="test")[0];
     """
-    #if not filedict:
-    #    filedict = list_google_docs()[0]
+    if not filedict:
+        filedict = list_google_docs()[0]
 
-    doc_in_html = drived.download(user_session(userhandle).drive, filedict)
+    doc_in_html = drived.download(user_session.drive, filedict)
     out = drived.format(doc_in_html)
     out.remove_comments()
     return out.html
 
 
-def publish_doc(userhandle, filedict):
+def publish_doc(user_id=None, filedict=None):
     """
     Process a google doc and publish it.
 
+    Warning:  the default arg values user_id=None and google_doc_id=None are both for ease of testing.
+
     Args:
-        userhandle: GhostDoc userhandle.
+        user_id: GhostDoc user_id.
         filedict: metadata of a google doc.
 
     Returns:
@@ -262,21 +215,23 @@ def publish_doc(userhandle, filedict):
 
         # probably need to revisit this in some capacity
         if not db_connector.doc_exist(filedict):
-            db_connector.add_doc(filedict, userhandle)
+            db_connector.add_doc(filedict, user_id)
         doc_id = filedict["id"]
-        html_compiled = preview_doc(userhandle, filedict)
+        html_compiled = preview_doc(user_id, filedict)
     else:
         doc = load_doc(googledoc_id=filedict).first()
         doc_id = filedict
-        html_compiled = preview_doc(userhandle, doc.htmlLink)
+        html_compiled = preview_doc(user_id, doc.htmlLink)
 
     db_connector.update_doc(doc_id, html_compiled)
     return html_compiled
 
 
-def view_doc(arg_google_doc_id):
+def view_doc(user_id=None, arg_google_doc_id=None):
     """
     Load the content of a compiled doc.
+
+    Warning:  the default arg values user_id=None and google_doc_id=None are both for ease of testing.
 
     Args:
         user_id: GhostDoc user_id.
@@ -285,8 +240,8 @@ def view_doc(arg_google_doc_id):
     Returns:
         HTML as a string. ( need to return more, such as navigation. )
     """
-    #if not arg_google_doc_id:
-    #    arg_google_doc_id = list_google_docs()[0]['id']
+    if not arg_google_doc_id:
+        arg_google_doc_id = list_google_docs()[0]['id']
 
     doc = db_connector.find_doc(arg_google_doc_id)[0]
     html = doc.html

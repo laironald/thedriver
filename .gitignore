@@ -3,9 +3,7 @@
 .webassets*
 .DS_Store
 *~
-<<<<<<< HEAD
 
-=======
-*journal
->>>>>>> rl-130922-template
+*.db
+
 *.db
