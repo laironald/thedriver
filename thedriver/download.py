@@ -5,7 +5,7 @@ import re
 import time
 
 
-def download(driv, drive_file, retry=10):
+def download(driv, drive_file):
     """Download a file's content.
     Args:
     drive_file: Drive File instance.
@@ -26,18 +26,14 @@ def download(driv, drive_file, retry=10):
     elif type(drive_file).__name__ in ('str', 'unicode'):
         download_url = drive_file
 
-    print download_url
     if not download_url:
         return None
     try:
         resp, content = driv.service._http.request(download_url)
     except:
-        if retry<=0 :
-            print 'Has reached max time of retry... giving up... :('
-            return None
         print 'Error while downloading file. About to retry...'
         time.sleep(0.5)
-        content = download(driv, drive_file, retry=retry-1)
+        content = download(driv, drive_file)
         return content
 
     if resp.status == 200:
