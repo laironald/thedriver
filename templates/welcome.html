@@ -43,12 +43,22 @@
       // The user is signed in
       this.authResult = authResult;
       document.getElementById('signinButton').setAttribute('style', 'display: none');
+<<<<<<< HEAD
       $.ajax({
         type: 'POST',
         url: '/auth?state={{ STATE }}',
         contentType: 'application/octet-stream; charset=utf-8',
         data: this.authResult.code
       });
+=======
+      window.location.replace('/auth?state={{STATE}}&code='+this.authResult.code)
+      /*$.ajax({
+        type: 'POST',
+        url: '/auth?stat={{STATE}}',
+        contentType: 'application/octet-stream; charset=utf-8',
+        data: this.authResult.code
+      });*/
+>>>>>>> rl-130922-template
 
     } else if (authResult['error']) {
       // There was an error, which means the user is not signed in.    

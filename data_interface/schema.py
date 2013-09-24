@@ -33,7 +33,7 @@ class User(Base):
     name = Column(String(45), unique=True)
     handle = Column(String(45), unique=True)
     google_account = Column(String(45))
-    oauth_code = Column(String(45))
+    credentials = Column(String(45))
     email = Column(String(45))
     time_created = Column(DateTime, default=func.now())
     time_updated = Column(DateTime, default=func.now(), onupdate=func.now())

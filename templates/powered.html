@@ -1,58 +1,34 @@
-<!DOCTYPE html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title>&lt;("&lt;) | {{ doc.name }}</title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% extends "layout/base.html" %}
 
-        <link rel="stylesheet" href="/css/bootstrap.min.css">
-        <link rel="stylesheet" href="/css/main.css">
+{% block title %}
+  &lt;("&lt;) | {{ doc.name }}
+{% endblock %}
 
-        <script src="/js/vendor/modernizr-2.6.2-respond-1.1.0.min.js"></script>
-        {% if request.headers['Host'] != "localhost:5000" %}
-            <script type="text/javascript">
-              var analytics=analytics||[];(function(){var e=["identify","track","trackLink","trackForm","trackClick","trackSubmit","page","pageview","ab","alias","ready","group"],t=function(e){return function(){analytics.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var n=0;n<e.length;n++)analytics[e[n]]=t(e[n])})(),analytics.load=function(e){var t=document.createElement("script");t.type="text/javascript",t.async=!0,t.src=("https:"===document.location.protocol?"https://":"http://")+"d2dq2ahtl5zl1z.cloudfront.net/analytics.js/v1/"+e+"/analytics.min.js";var n=document.getElementsByTagName("script")[0];n.parentNode.insertBefore(t,n)};
-              analytics.load("02svud2b5d");
-            </script>
-        {% endif %}
-    </head>
-    <body>
+{% block container %}
+  <h3>{{ doc.name }}</h3>
+  <br />
+  <iframe src="/view/{{ doc.googledoc_id }}" style="border: 0px none"
+    class="doc" frameborder="1" width="1200" scrolling="no"></iframe>
+  <br /><br />
+  <h5>
+    <span class="label label-info">This document is powered by GhostDocs (&gt;")&gt;</span>
+    <span class="label label-default">@{{ user.handle }}</span>
+  </h5>
+{% endblock %}
 
-        <div class="container">
-          <div class="row-fluid">
-            <div class="row-fluid">
-              <div class="col-md-12">
-                <h3>{{ doc.name }}</h3>
-                <br />
-                <iframe src="/view/{{ doc.googledoc_id }}" style="border: 0px none"
-                  class="doc" frameborder="1" width="1200" scrolling="no"></iframe>
-                <br /><br />
-                <h5>
-                  <span class="label label-info">This document is powered by GhostDocs (&gt;")&gt;</span>
-                  <span class="label label-default">@{{ user.handle }}</span>
-                </h5>
-              </div>
-            </div>
-          </div>
-        </div> <!-- /container -->
+{% block specific_javascript %}
+  <script>
+    analytics.track(
+      'Viewed GhostDocs', {
+          user: '{{ user.handle }}',
+          doc : '{{ doc.handle }}'
+      });
+  </script>
+{% endblock %}
 
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
-        <script>window.jQuery || document.write('<script src="/js/vendor/jquery-1.10.1.min.js"><\/script>')</script>
+{% block navbar %}
+{% endblock %}
 
-        <script src="/js/vendor/bootstrap.min.js"></script>
-        <script src="/js/powered.js"></script>
-        <script>
-          analytics.track(
-            'Viewed GhostDocs', {
-                user: '{{ user.handle }}',
-                doc : '{{ doc.handle }}'
-            });
-        </script>
+{% block menubase %}
+{% endblock %}
 
-    </body>
-</html>

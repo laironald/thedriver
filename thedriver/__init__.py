@@ -13,17 +13,18 @@ class go():
     http = None
     service = None
 
-    def __init__(self, product="drive", version="v2"):
+    def __init__(self, credentials, product="drive", version="v2"):
         self.product = product
         self.version = version
-        self.service = self.build()
+        self.service = self.build(credentials)
 
-    def build(self, **kwargs):
+    def build(self, credentials, **kwargs):
         """
         Very basic way to check if an authentication exists. We are pickling
         items and their objects. Likely to change this way of authentication
 
         Tested? No
+        """
         """
         if os.path.exists(pickle_file):
             credentials = pickle.load(open(pickle_file, "rb"))
@@ -32,7 +33,10 @@ class go():
         else:
             http = None
         self.http = http
-
+        """
+        http = httplib2.Http()
+        http = credentials.authorize(http)
+        self.http = http
         if not self.http:
             self.auth_http()
         kwargs["http"] = self.http

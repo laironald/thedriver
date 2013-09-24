@@ -92,13 +92,18 @@ class GhostDBConnector():
         '''
         Base.metadata.create_all(self.engine, checkfirst=True)
 
-    def add_user(self, arg_name, arg_google_account, arg_oauth_code):
+    def get_credentials(self, userhandle):
+        user = self.session().query(User).filter(User.handle == userhandle).first()
+        return user.credentials
+
+
+    def add_user(self, arg_name, arg_google_account, arg_credentials):
         ''' Add a new user to GhostDocs
 
         '''
         user = User(name=arg_name,
                     google_account=arg_google_account,
-                    oauth_code=arg_oauth_code)
+                    credentials=arg_credentials)
         self.session.add(user)
         self.session.commit()
 
@@ -167,7 +172,11 @@ class GhostDBConnector():
         docs = self.session().query(Document).filter(Document.googledoc_id == arg_googledoc_id)
         return docs
 
+<<<<<<< HEAD
     def find_user(self, arg_google_account):
+=======
+    def find_google_user(self, arg_google_account):
+>>>>>>> rl-130922-template
         """ Find a GhostDocs user by google account.
 
         Args:
@@ -182,6 +191,24 @@ class GhostDBConnector():
         else:
             return None
 
+<<<<<<< HEAD
+=======
+    def find_ghostdocs_user(self, arg_userhandle):
+        """ Find a GhostDocs user by handle.
+
+        Args:
+            arg_userhandle: google account.  e.g.  thedriverjones
+
+        Returns:
+            A User instance.
+        """
+        user = self.session().query(User).filter(User.handle == arg_userhandle)
+        if user.count(): 
+            return user.first()
+        else:
+            return None
+
+>>>>>>> rl-130922-template
     def list_ghost_docs(self, user_id):
         ''' list a user's ghostdocs files
 
@@ -192,8 +219,13 @@ class GhostDBConnector():
             a list of Document instances.
 
         '''
+<<<<<<< HEAD
         docs = self.session().query(Document).filter(Document.user_id == user_id).all()
         return docs
+=======
+        user = self.session().query(User).filter(User.handle == user_id).first()
+        return user.document
+>>>>>>> rl-130922-template
 
     def find_doc_by_user(self, username, dochandle):
         # TODO: might want to use join logic. maybe.
