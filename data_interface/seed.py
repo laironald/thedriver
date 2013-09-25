@@ -1,8 +1,12 @@
 from ghost_db import *
+import pickle
 
 connector = GhostDBConnector()
 connector.CreateDB()
 user = User(**config.get("drive"))
+cred = pickle.load(open('./pickle/oauth_code.pick','r'))
+cred = pickle.dumps(cred)
+user.credentials = cred
 
 docs = [{
     "name": "Testing File",
