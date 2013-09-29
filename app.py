@@ -95,9 +95,12 @@ def callback_handler():
 # --- API Calls for actions ---
 @app.route('/action/open_doc/<doc_id>')
 def open_doc(doc_id):
-    data = di.user_session(session['user']).drive.file_by_id(doc_id)
     user = di.db_connector.session().query(di.ghost_db.User).filter(di.ghost_db.User.handle == session["user"]).first()
-    return json.dumps({"status": di.add_doc(user, data)})
+    data = di.user_session(session['user']).drive.file_by_id(doc_id)
+    url = url_for('render_base',username=user.handle,dochandle=doc_id)
+    callbackdata = {"status": di.add_doc(user, data), "redirect_url":url}
+    return json.dumps(callbackdata)
+
 
 
 @app.route('/action/get/settings/<doc_id>/', methods=["GET"])

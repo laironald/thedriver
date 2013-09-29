@@ -36,9 +36,11 @@ $(window).on('resize load', adjustIframes);
                 if (data["status"]) {
                     // how do we open this modal and set it up properly?
                     // $("#settingModal").modal();
-                    current_url = location.href;
-                    current_doc = _.last(current_url.split("/"));
-                    location.href = current_url.replace("/"+current_doc, "/"+doc["id"]);
+                    //current_url = location.href;
+                    //current_doc = _.last(current_url.split("/"));
+                    location.href = data["redirect_url"];
+
+                    //location.href = current_url.replace("/"+current_doc, "/"+doc["id"]);
                 }
             },
             error: function() {
