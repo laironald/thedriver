@@ -78,9 +78,10 @@
           {% endfor %}
           <li class="divider"></li>
           <li><a href="#" ng-click="new_open()">Convert from Google</a></li>
-         </ul>
+        </ul>
       </div>
     </div>
+
     <div class="btn-group">
       <button type="button" data-url="{{ doc.googledoc_id }}" class="btn btn-default publish">Publish</button>
       <button type="button" data-url="{{ doc.googledoc_id }}" class="btn btn-default preview" data-toggle="modal" data-target="#previewModal" ng-click="preview('{{ doc.googledoc_id }}')">Preview</button>

@@ -95,7 +95,9 @@ def add_doc(user, new_doc):
     user.document.append(doc)
     print 'appending doc ' + doc.name
     db_connector.commit()
-    return True
+    doc.handle = "doc{id}".format(id=doc.id)
+    db_connector.commit()
+    return doc.handle
 
 
 def update_doc_open(doc):

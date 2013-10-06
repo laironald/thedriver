@@ -97,8 +97,11 @@ def callback_handler():
 def open_doc(doc_id):
     user = di.db_connector.session().query(di.ghost_db.User).filter(di.ghost_db.User.handle == session["user"]).first()
     data = di.user_session(session['user']).drive.file_by_id(doc_id)
-    url = url_for('render_base',username=user.handle,dochandle=doc_id)
-    callbackdata = {"status": di.add_doc(user, data), "redirect_url":url}
+    url = url_for('render_base',
+        username=user.handle, 
+        dochandle=di.add_doc(user, data))
+    
+    callbackdata = {"status": True, "redirect_url":url}
     return json.dumps(callbackdata)
 
 
