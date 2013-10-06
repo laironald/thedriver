@@ -34,6 +34,19 @@ CLIENT_ID = json.loads(open('client_secrets.json','r').read())['web']['client_id
 # url_for('static', filename='all.css')
 
 
+# ------- error handling ----------
+
+@app.errorhandler(404)
+@app.errorhandler(500)
+def page_not_found(e):
+    if app.debug:
+        return e
+    else:
+        return render_template("404.html")
+
+# ----------------------------------
+
+
 @app.route('/')
 def index():
     '''Initialize a session for the current user, and render welcome.html.'''
@@ -131,9 +144,6 @@ def render_userpage(username):
     '''
     print '** to find ghostdocs user ' + username + '***'
     user = di.find_ghostdocs_user(username)
-    if not user:
-        return render_template("404.html")
-
     recent_docs = di.list_recent_docs(user=user)
     return render_template("profile.html", 
         recent_docs=recent_docs, user=user)
@@ -147,27 +157,20 @@ def render_base(username, dochandle):
     if (not 'user' in session or session['user']!=username) and username!='ghostie':
         return render_template("no_access.html")
 
-
     doc = di.load_doc(username, dochandle)
-    if not doc:
-        return render_template("404.html")
-    else:
-        di.update_doc_open(doc)
-        recent_docs = di.list_recent_docs(doc)
-        session["user"] = username
-        session["doc"] = dochandle
-        return render_template(
-            'index.html',
-            doc=doc, recent_docs=recent_docs, user=doc.user, CLIENT_ID=CLIENT_ID)
+    di.update_doc_open(doc)
+    recent_docs = di.list_recent_docs(doc)
+    session["user"] = username
+    session["doc"] = dochandle
+    return render_template(
+        'index.html',
+        doc=doc, recent_docs=recent_docs, user=doc.user, CLIENT_ID=CLIENT_ID)
 
 
 @app.route('/out/<username>/<dochandle>')
 def render_publish(username, dochandle):
     doc = di.load_doc(username, dochandle)
-    if not doc:
-        return render_template("404.html")
-    else:
-        return render_template('powered.html', doc=doc, user=doc.user)
+    return render_template('powered.html', doc=doc, user=doc.user)
 
 
 # --- IFRAME SUPPORT ---
