@@ -141,7 +141,7 @@ def list_google_docs(userhandle, if_hide_ghost_doc=True):
     return google_docs
 
 
-def list_recent_docs(doc, number=10):
+def list_recent_docs(doc=None, user=None, number=10):
     """
     Return a list of documents that were recently opened
 
@@ -152,7 +152,8 @@ def list_recent_docs(doc, number=10):
     """
     # research @ relationships where things are auto-sorted
     # is this possible?
-    user = doc.user
+    if doc and not user:
+        user = doc.user
     docs = sorted(user.document, key=lambda doc: doc.time_opened, reverse=True)
     if doc:
         docs.pop(docs.index(doc))

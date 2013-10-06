@@ -134,25 +134,9 @@ def render_userpage(username):
     if not user:
         return render_template("404.html")
 
-    docs = di.list_ghost_docs(username)
-
-    # if len(docs) == 0:
-    #     # import the first google doc
-    #     doc = di.list_google_docs(username)[0]
-    #     print '...........importing the first google doc into ghostdocs......'
-    #     print doc
-    #     di.add_doc(user, doc)
-    #     docs = di.list_ghost_docs(username)
-    # else:
-    #     print '...............no need to import...............'
-    #     print len(docs)
-    #     print [x.name for x in docs]
-
-    # doc = docs[0]
-    # dochandle = doc.handle
-    # return redirect('/in/'+username+'/'+dochandle)
-    #return render_base(username, doc['handle'])
-    return render_template("profile.html", user=user)
+    recent_docs = di.list_recent_docs(user=user)
+    return render_template("profile.html", 
+        recent_docs=recent_docs, user=user)
 
 # --- EDIT DOC / PREVIEW DOC ---
 
