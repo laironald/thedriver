@@ -69,7 +69,7 @@
 {% block footer %}{% endblock %}
 
 {% block specific_javascript %}
-	<script type="javascript/text">
+	<script>
   	function onSignInCallback(authResult) {
     	if (authResult['access_token']) {
         // The user is signed in
@@ -83,14 +83,8 @@
   </script>
 
   <!-- google+ script --> 
+  <script src="https://apis.google.com/js/client:plusone.js"></script>
   <script type="text/javascript">
-    (function() {
-      var po = document.createElement('script'); 
-      po.type = 'text/javascript'; po.async = true;
-      po.src = 'https://apis.google.com/js/client:plusone.js';
-      var s = document.getElementsByTagName('script')[0];
-      s.parentNode.insertBefore(po, s);
-    })();
     analytics.track('Loaded welcome page');
 	</script>
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
