@@ -42,21 +42,111 @@ def page_not_found(e):
     if app.debug:
         return e
     else:
-        return render_template("404.html")
+        return render_template("page_not_found.html")
 
 # ----------------------------------
 
 
 @app.route('/')
-def index():
+def welcome():
     '''Initialize a session for the current user, and render welcome.html.'''
     '''Show log-in botton if user hasn't logged in.'''
     # Create a state token.
     state = ''.join(random.choice(string.ascii_uppercase + string.digits)
                     for x in xrange(32))
     session['state'] = state
-    return render_template('welcome.html', STATE = state, CLIENT_ID=CLIENT_ID)
+    return render_template('views/welcome.html', STATE = state, CLIENT_ID=CLIENT_ID)
 
+# --- API Calls for actions ---
+
+@app.route('/action/open_doc/<doc_id>')
+def open_doc(doc_id):
+    user = di.db_connector.session().query(di.ghost_db.User).filter(di.ghost_db.User.handle == session["user"]).first()
+    data = di.user_session(session['user']).drive.file_by_id(doc_id)
+    url = url_for('render_base',
+        username=user.handle, 
+        dochandle=di.add_doc(user, data))
+    
+    callbackdata = {"status": True, "redirect_url":url}
+    return json.dumps(callbackdata)
+
+@app.route('/action/get/settings/<doc_id>/', methods=["GET"])
+def get_settings(doc_id):
+    doc = di.fetch_doc_by_id(session["user"], doc_id)
+    data = {"title": doc.name, "handle": doc.handle}
+    return json.dumps(data)
+
+@app.route('/action/post/settings/<doc_id>', methods=["POST"])
+def set_settings(doc_id):
+    doc = di.fetch_doc_by_id(session["user"], doc_id)
+    meta = json.loads(request.data)
+    # Need to check the handle to make sure its ok!
+    di.update_doc_meta(doc, meta)
+    return json.dumps({})
+
+# --- USER PAGE ---
+
+@app.route('/in/<username>')
+def profile(username):
+    ''' userpage is the page shown to a user after logging in.
+        for now, load the newest ghost doc.
+    '''
+    print '** to find ghostdocs user ' + username + '***'
+    user = di.find_ghostdocs_user(username)
+    recent_docs = di.list_recent_docs(user=user)
+    return render_template("views/profile.html", 
+        recent_docs=recent_docs, user=user)
+
+# --- EDIT DOC / PREVIEW DOC ---
+
+@app.route('/in/<username>/<dochandle>')
+def editor(username, dochandle):
+
+    # check if the current user has access to this doc
+    if (not 'user' in session or session['user']!=username) and username!='ghostie':
+        return render_template("views/page_not_found.html")
+
+    doc = di.load_doc(username, dochandle)
+    di.update_doc_open(doc)
+    recent_docs = di.list_recent_docs(doc)
+    session["user"] = username
+    session["doc"] = dochandle
+    return render_template(
+        'editor.html',
+        doc=doc, recent_docs=recent_docs, user=doc.user, CLIENT_ID=CLIENT_ID)
+
+
+@app.route('/out/<username>/<dochandle>')
+def document(username, dochandle):
+    doc = di.load_doc(username, dochandle)
+    return render_template('views/document.html', doc=doc, user=doc.user)
+
+
+# --- IFRAME SUPPORT ---
+
+
+@app.route('/view/<doc_id>')
+def render_view(doc_id):
+    return di.view_doc(arg_google_doc_id=doc_id)
+
+
+@app.route('/preview/<doc_id>')
+def render_preview(doc_id):
+    # should be preview doc, but whatever
+    # change this later
+    doc = di.load_doc(googledoc_id=doc_id).first()
+    return di.preview_doc(userhandle=session['user'], filedict=doc.htmlLink)
+
+
+@app.route('/publish/<doc_id>')
+def publish_doc(doc_id):
+    di.publish_doc(userhandle=session['user'], filedict=doc_id)
+    status = {}
+    status["status"] = "success"
+    return json.dumps(status)
+
+
+# -----------------------
 
 
 # --- login callback ---
@@ -105,99 +195,9 @@ def callback_handler():
 
     return redirect('/in/'+user_handle)
 
-# --- API Calls for actions ---
-@app.route('/action/open_doc/<doc_id>')
-def open_doc(doc_id):
-    user = di.db_connector.session().query(di.ghost_db.User).filter(di.ghost_db.User.handle == session["user"]).first()
-    data = di.user_session(session['user']).drive.file_by_id(doc_id)
-    url = url_for('render_base',
-        username=user.handle, 
-        dochandle=di.add_doc(user, data))
-    
-    callbackdata = {"status": True, "redirect_url":url}
-    return json.dumps(callbackdata)
-
-
-
-@app.route('/action/get/settings/<doc_id>/', methods=["GET"])
-def get_settings(doc_id):
-    doc = di.fetch_doc_by_id(session["user"], doc_id)
-    data = {"title": doc.name, "handle": doc.handle}
-    return json.dumps(data)
-
-
-@app.route('/action/post/settings/<doc_id>', methods=["POST"])
-def set_settings(doc_id):
-    doc = di.fetch_doc_by_id(session["user"], doc_id)
-    meta = json.loads(request.data)
-    # Need to check the handle to make sure its ok!
-    di.update_doc_meta(doc, meta)
-    return json.dumps({})
-
-
-# --- USER PAGE ---
-
-@app.route('/in/<username>')
-def render_userpage(username):
-    ''' userpage is the page shown to a user after logging in.
-        for now, load the newest ghost doc.
-    '''
-    print '** to find ghostdocs user ' + username + '***'
-    user = di.find_ghostdocs_user(username)
-    recent_docs = di.list_recent_docs(user=user)
-    return render_template("profile.html", 
-        recent_docs=recent_docs, user=user)
-
-# --- EDIT DOC / PREVIEW DOC ---
-
-@app.route('/in/<username>/<dochandle>')
-def render_base(username, dochandle):
-
-    # check if the current user has access to this doc
-    if (not 'user' in session or session['user']!=username) and username!='ghostie':
-        return render_template("no_access.html")
-
-    doc = di.load_doc(username, dochandle)
-    di.update_doc_open(doc)
-    recent_docs = di.list_recent_docs(doc)
-    session["user"] = username
-    session["doc"] = dochandle
-    return render_template(
-        'index.html',
-        doc=doc, recent_docs=recent_docs, user=doc.user, CLIENT_ID=CLIENT_ID)
-
-
-@app.route('/out/<username>/<dochandle>')
-def render_publish(username, dochandle):
-    doc = di.load_doc(username, dochandle)
-    return render_template('powered.html', doc=doc, user=doc.user)
-
-
-# --- IFRAME SUPPORT ---
-
-
-@app.route('/view/<doc_id>')
-def render_view(doc_id):
-    return di.view_doc(arg_google_doc_id=doc_id)
-
-
-@app.route('/preview/<doc_id>')
-def render_preview(doc_id):
-    # should be preview doc, but whatever
-    # change this later
-    doc = di.load_doc(googledoc_id=doc_id).first()
-    return di.preview_doc(userhandle=session['user'], filedict=doc.htmlLink)
-
-
-@app.route('/publish/<doc_id>')
-def publish_doc(doc_id):
-    di.publish_doc(userhandle=session['user'], filedict=doc_id)
-    status = {}
-    status["status"] = "success"
-    return json.dumps(status)
-
 
 # -----------------------
+
 
 if __name__ == '__main__':
     app.run()
